@@ -12,7 +12,7 @@ runs:
       run: |  
         pwd
         ls
-        cat input_adjacency_list.txt
+        cat ./input_adjacency_list.txt
 
     - name: Build Container
       shell: bash
