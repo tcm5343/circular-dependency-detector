@@ -28,6 +28,7 @@ jobs:
 
       - name: Print Adjacency List
         run: |
+          ls
           ls "/home/runner/work/circular-dependency-detector/circular-dependency-detector/"
           echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
