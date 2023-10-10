@@ -5,11 +5,13 @@ on:
       - main
 
 jobs:
-  build-adjacency-list:
+  circular-dependency-detector:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: miller-init
 
       - name: Generate Adjacency List
         id: adj-list
@@ -20,7 +22,7 @@ jobs:
 
       - name: Print Adjacency List
         run: |
-          ls ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+          ls "/home/runner/work/circular-dependency-detector/circular-dependency-detector/"
           echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
       - name: Upload Adjacency List
@@ -29,19 +31,21 @@ jobs:
           name: dist-without-markdown
           path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
-    outputs:
-      adj-list-artifact-path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
-
-  circular-dependency-detector:
-    needs: build-adjacency-list
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: circular-dependency-detector
         id: circular-dependency-detector
         #uses: actions/circular-dependency-detector@v2
         uses: ./
         with:
-          adjacency_list_path: ${{ needs.build-adjacency-list.outputs.adj-list-artifact-path }}
+          adjacency_list_path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+
+    outputs:
+      adj-list-artifact-path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+
+  # circular-dependency-detector:
+  #   needs: build-adjacency-list
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: miller-init
