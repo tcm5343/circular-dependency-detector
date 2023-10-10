@@ -1,2 +1,2 @@
 #  circular-dependency-detector
-A GitHub action to detect and output cycles and topological generations given a directed graph.
+A GitHub action to detect and output cycles and topological generations given a directed graph as an adjacency list.
