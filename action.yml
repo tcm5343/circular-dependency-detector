@@ -12,7 +12,7 @@ runs:
       run: |  
         pwd
         ls
-        cat ./input_adjacency_list.txt
+        cat ${{ inputs.adjacency_list_path }}
 
     - name: Build Container
       shell: bash
