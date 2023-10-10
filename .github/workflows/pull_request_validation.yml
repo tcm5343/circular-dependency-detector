@@ -20,6 +20,7 @@ jobs:
 
       - name: Print Adjacency List
         run: |
+          ls ${{ steps.adj-list.outputs.adj-list-artifact-path }}
           echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
       - name: Upload Adjacency List
@@ -27,6 +28,9 @@ jobs:
         with:
           name: dist-without-markdown
           path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+
+    outputs:
+      adj-list-artifact-path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
   circular-dependency-detector:
     needs: build-adjacency-list
@@ -40,4 +44,4 @@ jobs:
         #uses: actions/circular-dependency-detector@v2
         uses: ./
         with:
-          adjacency_list: 'some archive path here'
+          adjacency_list_path: ${{ needs.build-adjacency-list.outputs.adj-list-artifact-path }}

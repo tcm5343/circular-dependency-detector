@@ -1,7 +1,10 @@
 FROM golang:1.21
 
+ARG ADJACENCY_LIST_PATH
+
 WORKDIR /app
 
+COPY $ADJACENCY_LIST_PATH ./
 COPY go.mod ./
 COPY ./pkg ./
 
