@@ -7,5 +7,3 @@ inputs:
 runs:
   using: docker
   image: Dockerfile
-  args:
-    - "--build-arg ADJACENCY_LIST_PATH=${{ inputs.adjacency_list_path }}"
