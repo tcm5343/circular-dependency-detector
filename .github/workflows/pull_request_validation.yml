@@ -19,13 +19,13 @@ jobs:
 
       - name: Print Adjacency List
         run: |
-          echo ${{ steps.adj-list.outputs.adj-list-artifact }}
+          echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
       - name: Upload Adjacency List
         uses: actions/upload-artifact@v3
         with:
           name: dist-without-markdown
-          path: ${{ steps.adj-list.outputs.adj-list-artifact }}
+          path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
