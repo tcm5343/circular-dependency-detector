@@ -31,7 +31,7 @@ jobs:
           name: dist-without-markdown
           path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
-      - name: circular-dependency-detector
+      - name: Circular Dependency Detector
         id: circular-dependency-detector
         #uses: actions/circular-dependency-detector@v2
         uses: ./
