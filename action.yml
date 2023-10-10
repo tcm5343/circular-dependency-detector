@@ -10,7 +10,7 @@ runs:
     - name: Build Container
       shell: bash
       run: |  
-        docker build -t circular-dependency-detector --build-arg path=${{ inputs.adjacency_list_path }} .
+        docker build -t circular-dependency-detector --build-arg ADJACENCY_LIST_PATH=${{ inputs.adjacency_list_path }} .
 
     - name: Run Container
       shell: bash
