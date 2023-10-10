@@ -5,6 +5,7 @@ inputs:
     description: 'Path to a file where an adjacency list is stored'
     required: true
 runs:
+  using: "composite"
   test:
     runs-on: ubuntu-latest
     steps:
