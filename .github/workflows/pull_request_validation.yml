@@ -20,16 +20,16 @@ jobs:
           echo ./adjacency_list.txt > ${filename}
           echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
 
-      - name: Print Adjacency List
-        run: |
-          ls "/home/runner/work/circular-dependency-detector/circular-dependency-detector/"
-          echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
-
       - name: Upload Adjacency List
         uses: actions/upload-artifact@v3
         with:
           name: dist-without-markdown
           path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+
+      - name: Print Adjacency List
+        run: |
+          ls "/home/runner/work/circular-dependency-detector/circular-dependency-detector/"
+          echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
       - name: Circular Dependency Detector
         id: circular-dependency-detector
