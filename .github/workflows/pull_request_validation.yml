@@ -32,6 +32,9 @@ jobs:
     needs: build-adjacency-list
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: circular-dependency-detector
         id: circular-dependency-detector
         #uses: actions/circular-dependency-detector@v2
