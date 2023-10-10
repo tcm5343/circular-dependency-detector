@@ -8,9 +8,11 @@ runs:
   using: "composite"
   steps:
     - name: Build Container
+      shell: bash
       run: |  
         docker build -t circular-dependency-detector --build-arg path=${{ inputs.adjacency_list_path }} .
 
     - name: Run Container
+      shell: bash
       run: |  
         docker run circular-dependency-detector
