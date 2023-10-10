@@ -16,7 +16,7 @@ jobs:
         run: |  
           filename="input_adjacency_list.txt"
           echo ./adjacency_list.txt > filename
-          echo "adj-list-artifact-path=$(pwd)/$(filename)" >> $GITHUB_OUTPUT
+          echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
 
       - name: Print Adjacency List
         run: |
@@ -27,12 +27,6 @@ jobs:
         with:
           name: dist-without-markdown
           path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
-
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v3
-        with:
-          name: code-coverage-report
-          path: output/test/code-coverage.html
 
   circular-dependency-detector:
     needs: build-adjacency-list
