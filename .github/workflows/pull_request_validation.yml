@@ -17,11 +17,15 @@ jobs:
           echo ./adjacency_list.txt > input_adjacency_list.txt
           echo "adj-list-artifact-path=$(pwd)/input_adjacency_list.txt\n" >> $GITHUB_OUTPUT
 
+      - name: Print Adjacency List
+        run: |
+          echo ${{ steps.adj-list.outputs.adj-list-artifact }}
+
       - name: Upload Adjacency List
         uses: actions/upload-artifact@v3
         with:
           name: dist-without-markdown
-          path: ${{ steps.run_tests.outputs.adj-list-artifact }}
+          path: ${{ steps.adj-list.outputs.adj-list-artifact }}
 
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
