@@ -15,7 +15,7 @@ jobs:
         id: adj-list
         run: |  
           filename="input_adjacency_list.txt"
-          echo ./adjacency_list.txt > filename
+          echo ./adjacency_list.txt > ${filename}
           echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
 
       - name: Print Adjacency List
