@@ -1,0 +1,11 @@
+name: 'circular-dependency-detector'
+description: 'Detect and output cycles and topological generations given a directed graph.'
+inputs:
+  adjacency_list:
+    description: 'Path to a file where an adjacency list is stored'
+    required: true
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.adjacency_list }}

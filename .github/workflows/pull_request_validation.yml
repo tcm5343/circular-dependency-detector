@@ -1,0 +1,41 @@
+name: Pull Request Verification
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-adjacency-list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+  #     - name: Generate Adjacency List
+  #       id: adj-list
+  #       run: |  
+  #         echo ./adjacency_list.txt > input_adjacency_list.txt
+  #         echo "adj-list-artifact-path=$(pwd)/input_adjacency_list.txt\n" >> $GITHUB_OUTPUT
+
+  #     - name: Upload Adjacency List
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: dist-without-markdown
+  #         path: ${{ steps.run_tests.outputs.adj-list-artifact }}
+
+  #     - name: Archive code coverage results
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: code-coverage-report
+  #         path: output/test/code-coverage.html
+
+  # circular-dependency-detector:
+  #   needs: build-adjacency-list
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: circular-dependency-detector
+  #       id: circular-dependency-detector
+  #       #uses: actions/circular-dependency-detector@v2
+  #       uses: ./
+  #       with:
+  #         adjacency_list: 'some archive path here'
