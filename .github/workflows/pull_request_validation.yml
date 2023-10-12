@@ -23,7 +23,7 @@ jobs:
       - name: Upload Adjacency List
         uses: actions/upload-artifact@v3
         with:
-          name: dist-without-markdown
+          name: adj-list
           path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
       - name: Print Adjacency List
