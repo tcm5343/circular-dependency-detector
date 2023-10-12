@@ -5,37 +5,59 @@ on:
       - main
 
 jobs:
-  build-adjacency-list:
+  circular-dependency-detector:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: miller-init
 
-  #     - name: Generate Adjacency List
-  #       id: adj-list
-  #       run: |  
-  #         echo ./adjacency_list.txt > input_adjacency_list.txt
-  #         echo "adj-list-artifact-path=$(pwd)/input_adjacency_list.txt\n" >> $GITHUB_OUTPUT
+          # - name: Generate Adjacency List
+          #   id: adj-list
+          #   run: |  
+          #     echo "adj-list-artifact-path<<EOF" >> $GITHUB_OUTPUT
+        
+          #     # here we can place the command that will generate multi-line text
+          #     echo $(cat adjacency_list.txt) >> $GITHUB_OUTPUT 
+              
+          #     echo "EOF" >> $GITHUB_OUTPUT
 
-  #     - name: Upload Adjacency List
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: dist-without-markdown
-  #         path: ${{ steps.run_tests.outputs.adj-list-artifact }}
+      - name: Generate Adjacency List
+        id: adj-list
+        run: |  
+          filename="adjacency_list.txt"
+          echo ./adjacency_list.txt > ${filename}
+          echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
 
-  #     - name: Archive code coverage results
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: code-coverage-report
-  #         path: output/test/code-coverage.html
+      - name: Upload Adjacency List
+        uses: actions/upload-artifact@v3
+        with:
+          name: adj-list
+          path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+
+      - name: Print Adjacency List
+        run: |
+          ls
+          pwd
+          echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+
+      - name: Circular Dependency Detector
+        id: circular-dependency-detector
+        #uses: actions/circular-dependency-detector@v2
+        uses: ./
+        with:
+          adjacency_list_path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+
+    # outputs:
+    #   adj-list-artifact-path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
   # circular-dependency-detector:
   #   needs: build-adjacency-list
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - name: circular-dependency-detector
-  #       id: circular-dependency-detector
-  #       #uses: actions/circular-dependency-detector@v2
-  #       uses: ./
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
   #       with:
-  #         adjacency_list: 'some archive path here'
+  #         ref: miller-init
+
