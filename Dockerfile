@@ -6,7 +6,7 @@ RUN echo ${ADJACENCY_LIST_PATH}
 
 WORKDIR /app
 
-COPY adjacency_list.txtgit ./
+COPY adjacency_list.txt ./
 COPY go.mod ./
 COPY ./pkg ./
 RUN ls
