@@ -13,21 +13,28 @@ jobs:
         with:
           ref: miller-init
 
+          # - name: Generate Adjacency List
+          #   id: adj-list
+          #   run: |  
+          #     echo "adj-list-artifact-path<<EOF" >> $GITHUB_OUTPUT
+        
+          #     # here we can place the command that will generate multi-line text
+          #     echo $(cat adjacency_list.txt) >> $GITHUB_OUTPUT 
+              
+          #     echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Generate Adjacency List
         id: adj-list
         run: |  
-          echo "adj-list-artifact-path<<EOF" >> $GITHUB_OUTPUT
-    
-          # here we can place the command that will generate multi-line text
-          echo $(cat adjacency_list.txt) >> $GITHUB_OUTPUT 
-          
-          echo "EOF" >> $GITHUB_OUTPUT
+          filename="adjacency_list.txt"
+          echo ./adjacency_list.txt > ${filename}
+          echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
 
-      # - name: Upload Adjacency List
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: adj-list
-      #     path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+      - name: Upload Adjacency List
+        uses: actions/upload-artifact@v3
+        with:
+          name: adj-list
+          path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
       - name: Print Adjacency List
         run: |
