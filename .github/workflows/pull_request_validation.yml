@@ -16,21 +16,20 @@ jobs:
       - name: Generate Adjacency List
         id: adj-list
         run: |  
-          filename="input_adjacency_list.txt"
-          echo ./adjacency_list.txt > ${filename}
-          echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
+          : # filename="input_adjacency_list.txt"
+          : # echo ./adjacency_list.txt > ${filename}
+          echo "adj-list-artifact-path=$(cat ./adjacency_list.txt)" >> $GITHUB_OUTPUT
 
-      - name: Upload Adjacency List
-        uses: actions/upload-artifact@v3
-        with:
-          name: adj-list
-          path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+      # - name: Upload Adjacency List
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: adj-list
+      #     path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
       - name: Print Adjacency List
         run: |
           ls
           pwd
-          ls "/home/runner/work/circular-dependency-detector/circular-dependency-detector/"
           echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
       - name: Circular Dependency Detector
@@ -40,8 +39,8 @@ jobs:
         with:
           adjacency_list_path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
-    outputs:
-      adj-list-artifact-path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+    # outputs:
+    #   adj-list-artifact-path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
   # circular-dependency-detector:
   #   needs: build-adjacency-list
@@ -51,4 +50,4 @@ jobs:
   #       uses: actions/checkout@v4
   #       with:
   #         ref: miller-init
-  
+
