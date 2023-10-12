@@ -16,12 +16,12 @@ jobs:
       - name: Generate Adjacency List
         id: adj-list
         run: |  
-          echo "adj-list-artifact-path<<EOF" >> $GITHUB_ENV
+          echo "adj-list-artifact-path<<EOF" >> $GITHUB_OUTPUT
     
           # here we can place the command that will generate multi-line text
-          echo $(cat adjacency_list.txt) >> $GITHUB_ENV 
+          echo $(cat adjacency_list.txt) >> $GITHUB_OUTPUT 
           
-          echo "EOF" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_OUTPUT
 
       # - name: Upload Adjacency List
       #   uses: actions/upload-artifact@v3
