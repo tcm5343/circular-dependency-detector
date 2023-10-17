@@ -36,11 +36,11 @@ jobs:
           name: adj-list
           path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
-      - name: Print Adjacency List
-        run: |
-          ls
-          pwd
-          echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+      # - name: Print Adjacency List
+      #   run: |
+      #     ls
+      #     pwd
+      #     echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
       - name: Circular Dependency Detector
         id: circular-dependency-detector

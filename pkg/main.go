@@ -2,55 +2,55 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"strconv"
 	"strings"
 
-	// "gonum.org/v1/gonum/graph/path"
 	"gonum.org/v1/gonum/graph/simple"
 	"gonum.org/v1/gonum/graph/topo"
 )
 
-func lineCounter(r io.Reader) (int, error) {
-	// https://stackoverflow.com/a/24563853
-	buf := make([]byte, 32*1024)
-	count := 0
-	lineSep := []byte{'\n'}
+// func lineCounter(r io.Reader) (int, error) {
+// 	// https://stackoverflow.com/a/24563853
+// 	buf := make([]byte, 32*1024)
+// 	count := 0
+// 	lineSep := []byte{'\n'}
 
-	for {
-		c, err := r.Read(buf)
-		count += bytes.Count(buf[:c], lineSep)
+// 	for {
+// 		c, err := r.Read(buf)
+// 		count += bytes.Count(buf[:c], lineSep)
 
-		switch {
-		case err == io.EOF:
-			return count, nil
+// 		switch {
+// 		case err == io.EOF:
+// 			return count, nil
 
-		case err != nil:
-			return count, err
-		}
-	}
-}
+// 		case err != nil:
+// 			return count, err
+// 		}
+// 	}
+// }
 
 func main() {
 	fmt.Println("Howdy Partner!")
+	// file, err := os.Open("/app/adjacency_list.txt")
+	// defer file.Close()
+
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// num_lines, err := lineCounter(file)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// nodes := num_lines + 1
+	// fmt.Println("number of nodes", nodes)
+
 	file, err := os.Open("/app/adjacency_list.txt")
-	defer file.Close()
-
 	if err != nil {
 		log.Fatal(err)
 	}
-	num_lines, err := lineCounter(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-	nodes := num_lines + 1
-	fmt.Println("number of nodes", nodes)
-
-	file, err = os.Open("/app/adjacency_list.txt")
 	defer file.Close()
 
 	g := simple.NewDirectedGraph()
