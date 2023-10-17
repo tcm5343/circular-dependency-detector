@@ -12,6 +12,11 @@ import (
 	"gonum.org/v1/gonum/graph/topo"
 )
 
+// func topologicalGenerations(g simple.DirectedGraph) [][]simple.Node {
+// 	// we need to start by calculating the indegrees of each node of the graph
+// 	// then we may begin
+// }
+
 // func lineCounter(r io.Reader) (int, error) {
 // 	// https://stackoverflow.com/a/24563853
 // 	buf := make([]byte, 32*1024)
