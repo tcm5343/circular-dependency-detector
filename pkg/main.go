@@ -56,7 +56,6 @@ func main() {
 	g := simple.NewDirectedGraph()
 	scanner := bufio.NewScanner(file)
 	for i := 0; scanner.Scan(); i++ {
-		// fmt.Println(scanner.Text())
 		for _, dest_node_str := range strings.Fields(scanner.Text()) {
 			dest_node_int, err := strconv.Atoi(dest_node_str)
 			if err != nil {
@@ -67,10 +66,9 @@ func main() {
 		}
 	}
 
-	fmt.Println(topo.DirectedCyclesIn(g))
-
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
 
+	fmt.Println(topo.DirectedCyclesIn(g))
 }
