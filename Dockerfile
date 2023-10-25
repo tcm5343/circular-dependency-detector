@@ -8,6 +8,7 @@ WORKDIR /app
 
 COPY adjacency_list.txt ./
 COPY go.mod ./
+COPY main.go ./
 COPY ./pkg ./
 RUN ls
 
