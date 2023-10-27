@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: miller-init
+          ref: dev
 
           # - name: Generate Adjacency List
           #   id: adj-list
