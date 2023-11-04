@@ -3,4 +3,3 @@ A GitHub action to detect and output cycles and topological generations given a 
 
 To run:
 docker build -t circular-dependency-detector . && docker run circular-dependency-detector
-
