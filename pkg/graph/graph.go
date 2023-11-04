@@ -9,7 +9,7 @@ import (
 	"gonum.org/v1/gonum/graph/simple"
 )
 
-func BuildGraph(filePath string) error {
+func BuildGraph(filePath string) (*simple.DirectedGraph, error) {
 	fp, err := os.Open(filePath)
 	if err != nil {
 		panic(err)
@@ -19,13 +19,13 @@ func BuildGraph(filePath string) error {
 	reader := csv.NewReader(fp)
 	reader.FieldsPerRecord = -1
 	reader.Comma = ' '
+	dg := simple.NewDirectedGraph()
 
 	lines, err := reader.ReadAll()
 	if err != nil {
-		return fmt.Errorf("error reading adjacency list: %w", err)
+		return dg, fmt.Errorf("error reading adjacency list: %w", err)
 	}
 
-	dg := simple.NewDirectedGraph()
 	for _, line := range lines {
 		idFrom, _ := strconv.ParseInt(line[0], 10, 64)
 		for i := 1; i < len(line); i++ {
@@ -34,8 +34,5 @@ func BuildGraph(filePath string) error {
 		}
 	}
 
-	// j := topo.DirectedCyclesIn(dg)
-	// fmt.Println(j)
-
-	return nil
+	return dg, nil
 }
