@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"gonum.org/v1/gonum/graph/topo"
 
@@ -9,17 +10,25 @@ import (
 )
 
 func main() {
-	dg, err := graph.BuildDirectedGraph("./list/adjacency_list_cycle_2.csv")
+	dg, err := graph.BuildDirectedGraph("./list/email-Eu-core copy.txt")
 	if err != nil {
 		panic(err)
 	}
 
 	cycles := topo.DirectedCyclesIn(dg)
-	fmt.Println(cycles)
+	numberOfCycles := strconv.Itoa(len(cycles))
 
-	topologicalGenerations, err := graph.TopologicalGenerationsOf(dg)
-	if err != nil {
-		panic(err)
+	fmt.Println(numberOfCycles + " cycle(s) identified")
+
+	if len(cycles) > 0 {
+		fmt.Println(cycles)
+		fmt.Println("Skipping topological generation . . .")
+	} else {
+		tg, err := graph.TopologicalGenerationsOf(dg)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Print("topological generations: ")
+		fmt.Println(tg)
 	}
-	fmt.Println(topologicalGenerations)
 }
