@@ -34,5 +34,8 @@ func BuildGraph(filePath string) error {
 		}
 	}
 
+	// j := topo.DirectedCyclesIn(dg)
+	// fmt.Println(j)
+
 	return nil
 }
