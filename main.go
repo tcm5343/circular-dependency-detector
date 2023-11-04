@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	graph.BuildGraph("./list/adjacency_list_cycle_17.csv")
+	graph.BuildGraph("./list/adjacency_list_cycle_2.csv")
 }
