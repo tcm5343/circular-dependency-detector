@@ -9,7 +9,7 @@ import (
 	"gonum.org/v1/gonum/graph/simple"
 )
 
-func BuildGraph(filePath string) (*simple.DirectedGraph, error) {
+func BuildDirectedGraph(filePath string) (*simple.DirectedGraph, error) {
 	fp, err := os.Open(filePath)
 	if err != nil {
 		panic(err)
@@ -34,5 +34,9 @@ func BuildGraph(filePath string) (*simple.DirectedGraph, error) {
 		}
 	}
 
+	return dg, nil
+}
+
+func TopologicalGenerationsOf(dg *simple.DirectedGraph) (*simple.DirectedGraph, error) {
 	return dg, nil
 }

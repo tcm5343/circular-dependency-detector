@@ -9,11 +9,17 @@ import (
 )
 
 func main() {
-	dg, err := graph.BuildGraph("./list/adjacency_list_cycle_2.csv")
+	dg, err := graph.BuildDirectedGraph("./list/adjacency_list_cycle_2.csv")
 	if err != nil {
 		panic(err)
 	}
 
 	cycles := topo.DirectedCyclesIn(dg)
 	fmt.Println(cycles)
+
+	topologicalGenerations, err := graph.TopologicalGenerationsOf(dg)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(topologicalGenerations)
 }
