@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	dg, err := graph.BuildDirectedGraph("./list/email-Eu-core copy.txt")
+	dg, err := graph.BuildDirectedGraph("./list/adjacency_list.csv")
 	if err != nil {
 		panic(err)
 	}

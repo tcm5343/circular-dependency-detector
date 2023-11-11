@@ -29,8 +29,15 @@ func BuildDirectedGraph(filePath string) (*multi.DirectedGraph, error) {
 
 	for _, line := range lines {
 		idFrom, _ := strconv.ParseInt(line[0], 10, 64)
-		idTo, _ := strconv.ParseInt(line[1], 10, 64)
-		dg.SetLine(dg.NewLine(multi.Node(idFrom), multi.Node(idTo)))
+		nodeFrom, new := dg.NodeWithID(idFrom)
+		if new {
+			dg.AddNode(nodeFrom)
+		}
+
+		for i := 1; i < len(line); i++ {
+			idTo, _ := strconv.ParseInt(line[i], 10, 64)
+			dg.SetLine(dg.NewLine(multi.Node(idFrom), multi.Node(idTo)))
+		}
 	}
 
 	// fmt.Println(strconv.Itoa(dg.Nodes().Len()) + " node(s) and " + strconv.Itoa(len(lines)) + " edge(s) identified")
