@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: miller-init
+          ref: dev
 
           # - name: Generate Adjacency List
           #   id: adj-list
@@ -36,11 +36,11 @@ jobs:
           name: adj-list
           path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
-      - name: Print Adjacency List
-        run: |
-          ls
-          pwd
-          echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+      # - name: Print Adjacency List
+      #   run: |
+      #     ls
+      #     pwd
+      #     echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
       - name: Circular Dependency Detector
         id: circular-dependency-detector
