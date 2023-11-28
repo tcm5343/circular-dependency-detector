@@ -7,5 +7,7 @@ docker build -t circular-dependency-detector . && docker run circular-dependency
 
 Todo:
 Return 2d slice of nodes instead of integers from topological generations
+
 Consider edge cases involving multigraphs in topological generations
-Allow the input file to define nodes as strings instead of just ints
+
+Allow the input file to define nodes as strings instead of just ints (use a set and map)

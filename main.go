@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	dg, err := graph.BuildDirectedGraph("./list/email-Eu-core copy.txt")
+	dg, err := graph.BuildDirectedGraph("./list/email-Eu-core csopy.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -28,6 +28,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+
 		fmt.Print("topological generations: ")
 		fmt.Println(tg)
 	}
