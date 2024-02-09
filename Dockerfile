@@ -1,7 +1,7 @@
 FROM golang:1.21
 
-# ARG ADJACENCY_LIST_PATH
-# RUN echo ${ADJACENCY_LIST_PATH}
+ARG test
+RUN echo ${test}
 
 WORKDIR /app
 
