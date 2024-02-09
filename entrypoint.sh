@@ -1,6 +1,8 @@
 #!/bin/bash
 
-arg1=$0
+set -e
+
+arg1=$1
 echo $arg1
 
 echo HERE
