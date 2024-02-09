@@ -2,8 +2,7 @@
 
 set -e
 
-# arg1=$1
-# echo $arg1
+echo "Hello $1"
 
 echo HERE
 
