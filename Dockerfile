@@ -1,7 +1,7 @@
 FROM golang:1.21
 
-ARG ADJACENCY_LIST_PATH
-RUN echo ${ADJACENCY_LIST_PATH}
+# ARG ADJACENCY_LIST_PATH
+# RUN echo ${ADJACENCY_LIST_PATH}
 
 WORKDIR /app
 
@@ -18,4 +18,4 @@ RUN chmod +x ./entrypoint.sh
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./circular-dependency-detector
 
 
-ENTRYPOINT ["bash", "./entrypoint.sh"]
+ENTRYPOINT ["sh", "./entrypoint.sh"]
