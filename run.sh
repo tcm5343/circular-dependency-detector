@@ -5,5 +5,6 @@ echo HERE
 
 # chmod +x ./circular-dependency-detector
 ls
+pwd
 ./circular-dependency-detector
 # python3 ./visualizer/visualize.py
