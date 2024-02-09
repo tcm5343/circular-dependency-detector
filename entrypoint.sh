@@ -2,8 +2,8 @@
 
 set -e
 
-arg1=$1
-echo $arg1
+# arg1=$1
+# echo $arg1
 
 echo HERE
 

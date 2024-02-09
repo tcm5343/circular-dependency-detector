@@ -2,7 +2,7 @@ FROM golang:1.21
 
 # ARG ADJACENCY_LIST_PATH
 # RUN ls
-# RUN echo ${ADJACENCY_LIST_PATH}
+RUN echo $0
 
 WORKDIR /app
 
@@ -17,5 +17,6 @@ COPY entrypoint.sh ./
 RUN chmod +x ./entrypoint.sh
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./circular-dependency-detector
+
 
 ENTRYPOINT ["bash", "./entrypoint.sh"]
