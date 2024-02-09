@@ -14,7 +14,7 @@ COPY entrypoint.sh ./
 COPY ./pkg ./pkg
 COPY ./visualizer ./visualizer
 
-RUN chmod +x ./run.sh
+RUN chmod +x ./entrypoint.sh
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./circular-dependency-detector
 RUN ls
 
