@@ -6,12 +6,11 @@ FROM golang:1.21
 
 WORKDIR /app
 
-# RUN chmod +x run.sh
 COPY ./list ./list
 COPY go.mod ./
 COPY go.sum ./
 COPY main.go ./
-COPY run.sh ./
+COPY entrypoint.sh ./
 COPY ./pkg ./pkg
 COPY ./visualizer ./visualizer
 
@@ -19,4 +18,4 @@ RUN chmod +x ./run.sh
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./circular-dependency-detector
 RUN ls
 
-ENTRYPOINT ["bash", "./run.sh"]
+ENTRYPOINT ["bash", "./entrypoint.sh"]
