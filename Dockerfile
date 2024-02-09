@@ -19,4 +19,4 @@ RUN chmod +x ./run.sh
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./circular-dependency-detector
 RUN ls
 
-ENTRYPOINT ["sh", "./run.sh"]
+ENTRYPOINT ["bash", "./run.sh"]
