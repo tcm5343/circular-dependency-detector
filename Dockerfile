@@ -10,4 +10,4 @@ WORKDIR /app/cmd
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/circular-dependency-detector
 
 
-CMD ["sh", "/app/entrypoint.sh"]
+ENTRYPOINT ["sh", "/app/entrypoint.sh"]
