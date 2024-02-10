@@ -13,7 +13,7 @@ jobs:
           - adj_list_cycle.txt
           - adj_list_no_cycle.txt
     steps:
-      - name: checkout
+      - name: checkout current branch
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}
