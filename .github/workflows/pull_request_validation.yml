@@ -11,7 +11,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: dev
+          repository: ${{ github.repository }}
+          ref: ${{ github.GITHUB_REF_NAME }}  # this should be current branch name
+          path: './test/'
 
           # - name: Generate Adjacency List
           #   id: adj-list
@@ -46,7 +48,7 @@ jobs:
       - name: Circular Dependency Detector
         id: circular-dependency-detector
         #uses: actions/circular-dependency-detector@v2
-        uses: ./
+        uses: ./test/
         with:
           adjacency_list_path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
 
