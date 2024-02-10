@@ -27,7 +27,7 @@ jobs:
         id: adj-list
         run: |  
           filename="adjacency_list.txt"
-          echo ./adjacency_list.txt > ${filename}
+          echo ./testing/adj_list_with_cycle.txt > ${filename}
           echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
 
       - name: Upload Adjacency List
