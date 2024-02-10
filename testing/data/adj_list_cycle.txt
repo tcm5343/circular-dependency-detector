@@ -1,0 +1,4 @@
+# https://networkx.org/documentation/stable/reference/readwrite/adjlist.html#
+1 2
+2 3
+3 1

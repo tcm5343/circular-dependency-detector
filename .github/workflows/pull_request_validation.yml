@@ -27,7 +27,7 @@ jobs:
         id: adj-list
         run: |
           cd  test/
-          task INPUT_FILE="testing/${{ matrix.input_file }}" run
+          task INPUT_FILE="testing/data/${{ matrix.input_file }}" run
 
       # - name: circular-dependency-detector
       #   uses: tcm5343/circular-dependency-detector@v0.1.0-alpha
