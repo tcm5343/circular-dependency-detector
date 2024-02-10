@@ -6,7 +6,7 @@ tasks:
   build:
     cmds:
       - docker build -t circular-dependency-detector .
-    sources:  # can this be shared?
+    sources:
       - ./**/*.go
       - ./**/*.mod
       - ./**/*.sum
@@ -15,11 +15,13 @@ tasks:
       - testing/**/*
 
   run:
+    desc: run the program with a specific local input file based off config
     deps: [build]
     cmds:
       - docker run circular-dependency-detector "{{ .INPUT_FILE }}"
 
   test:
+    desc: run the unit tests
     deps: [build]
     cmds:
       - docker run --entrypoint 'go' circular-dependency-detector test -v /app/...
