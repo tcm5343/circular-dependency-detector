@@ -5,7 +5,7 @@ on:
       - main
 
 jobs:
-  cdd:
+  cdd-e2e:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -13,38 +13,19 @@ jobs:
           - adj_list_cycle.txt
           - adj_list_no_cycle.txt
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}
-          ref: ${{ github.GITHUB_REF_NAME }}  # this should be current branch name
+          ref: ${{ github.GITHUB_REF_NAME }}  # current branch name
           path: './test/'
 
-      - name: Install Task
+      - name: install task
         uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run branch specific circular dependency detector
-        id: adj-list
+      - name: task run
         run: |
           cd  test/
           task INPUT_FILE="testing/data/${{ matrix.input_file }}" run
-
-      # - name: circular-dependency-detector
-      #   uses: tcm5343/circular-dependency-detector@v0.1.0-alpha
-      #   with:
-      #     adjacency_list_path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
-      
-    # outputs:
-    #   adj-list-artifact-path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
-
-  # circular-dependency-detector:
-  #   needs: build-adjacency-list
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         ref: miller-init
-
