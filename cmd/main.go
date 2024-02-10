@@ -29,7 +29,7 @@ func main() {
 
 	if len(cycles) > 0 {
 		fmt.Println(cycles)
-		fmt.Println("Skipping topological generation . . .")
+		fmt.Println("skipping topological generation . . .")
 	} else {
 		tg, err := graph.TopologicalGenerationsOf(dg)
 		if err != nil {
