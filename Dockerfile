@@ -1,4 +1,4 @@
-FROM golang:1.21
+FROM golang:1.22
 
 COPY ./ /app/
 RUN chmod +x /app/entrypoint.sh
