@@ -8,6 +8,13 @@ docker build -t circular-dependency-detector . && docker run circular-dependency
 Todo:
 Return 2d slice of nodes instead of integers from topological generations
 
-Consider edge cases involving multigraphs in topological generations
+Consider edge cases involving multi-graphs in topological generations
 
-Allow the input file to define nodes as strings instead of just ints (use a set and map)
+Allow the input file to define nodes as strings instead of just integers (use a set and map)
+Input the NetworkX adjacency list format
+
+
+## Musical Acknowledgements
+Bob Dylan - Early Mornin' Rain
+Galt MacDermot - Ripped Open By Metal Explosion
+
