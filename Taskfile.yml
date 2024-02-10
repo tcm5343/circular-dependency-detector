@@ -25,3 +25,11 @@ tasks:
     deps: [build]
     cmds:
       - docker run --entrypoint 'go' circular-dependency-detector test -v /app/...
+  
+  # format:
+  #   cmds:
+  #     - 
+
+  # clean:
+  #   cmds:
+  #     - 
