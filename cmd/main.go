@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 
 	"gonum.org/v1/gonum/graph/topo"
@@ -10,7 +11,13 @@ import (
 )
 
 func main() {
-	dg, err := graph.BuildDirectedGraph("/app/testing/adj_list_cycle.txt")
+	argsWithoutProg := os.Args[1:]
+	inputGraphPath := argsWithoutProg[0]
+
+	// fmt.Println(argsWithoutProg)
+	// fmt.Println("/app/" + inputGraphPath)
+
+	dg, err := graph.BuildDirectedGraph("/app/" + inputGraphPath) // fix: this path can't contain spaces for some reason...
 	if err != nil {
 		panic(err)
 	}

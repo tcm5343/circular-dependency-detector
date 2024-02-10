@@ -3,7 +3,7 @@ version: '3'
 # env:
 #   ENV: testing
 
-# dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
 
 tasks:
   build:
@@ -13,12 +13,14 @@ tasks:
       - ./**/*.go
       - ./**/*.mod
       - ./**/*.sum
+      - ./**/.env
+      - ./entrypoint.sh
       - testing/**/*
 
   run:
     deps: [build]
     cmds:
-      - docker run circular-dependency-detector
+      - docker run circular-dependency-detector "{{ .INPUT_FILE }}"
 
   test:
     deps: [build]

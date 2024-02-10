@@ -15,6 +15,24 @@ jobs:
           ref: ${{ github.GITHUB_REF_NAME }}  # this should be current branch name
           path: './test/'
 
+      - name: Install Task
+        uses: arduino/setup-task@v2
+
+      - name: Run branch specific circular dependency detector
+        id: adj-list
+        run: |  
+          task INPUT_FILE="testing/adj_list_cycle.txt" test
+
+      - name: Generate Adjacency List
+        # id: adj-list
+        run: |  
+          filename="adjacency_list.txt"
+          echo ./adjacency_list.txt > ${filename}
+          pwd
+          echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
+
+
+      
           # - name: Generate Adjacency List
           #   id: adj-list
           #   run: |  
@@ -24,14 +42,6 @@ jobs:
           #     echo $(cat adjacency_list.txt) >> $GITHUB_OUTPUT 
               
           #     echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Generate Adjacency List
-        id: adj-list
-        run: |  
-          filename="adjacency_list.txt"
-          echo ./adjacency_list.txt > ${filename}
-          pwd
-          echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
 
       - name: Upload Adjacency List
         uses: actions/upload-artifact@v4
