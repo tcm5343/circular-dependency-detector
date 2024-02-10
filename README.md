@@ -1,11 +1,27 @@
 #  circular-dependency-detector
-A GitHub action to detect and output cycles and topological generations given a directed graph as an adjacency list.
+## What?
+A GitHub action, containerized and written in Go, to detect simple cycles or topological generations in directed multi-graphs.
 
-To run:
-docker build -t circular-dependency-detector . && docker run circular-dependency-detector
+## Usage
 
 
-Todo:
-Return 2d slice of nodes instead of integers from topological generations
-Consider edge cases involving multigraphs in topological generations
-Allow the input file to define nodes as strings instead of just ints
+## Contributing
+For local development, creating a `.env` file at the root of the repository to modify your config. The only supported format for the input graph file (`INPUT_FILE`) is an adjacency list which follows the format as used by [NetworkX](https://networkx.org/documentation/stable/reference/readwrite/adjlist.html#).
+```text
+INPUT_FILE="testing/data/adj_list_no_cycle.txt"  # no spaces in path for now, defaults to ... idk
+```
+
+[Task](https://taskfile.dev/) shall be used in the CI/CD pipelines and for local development. Run `task --list-all` for an update to date list of tasks.
+
+## Todo
+* Return 2d slice of nodes instead of integers from topological generations
+* Consider edge cases involving multi-graphs in topological generations
+* Allow the input file to define nodes as strings instead of just integers (use a set and map)
+* Input the NetworkX adjacency list format
+* Write unit tests
+* Exit early if cycles are identified
+* Error handling
+
+## Musical Acknowledgements
+Bob Dylan - Early Mornin' Rain
+Galt MacDermot - Ripped Open By Metal Explosion

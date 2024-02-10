@@ -1,20 +1,9 @@
 FROM golang:1.21
 
-# ARG ADJACENCY_LIST_PATH
-# RUN ls
-# RUN echo ${ADJACENCY_LIST_PATH}
+COPY ./ /app/
+RUN chmod +x /app/entrypoint.sh
 
-WORKDIR /app
+WORKDIR /app/cmd
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app/circular-dependency-detector
 
-COPY ./list ./list
-COPY go.mod ./
-COPY go.sum ./
-COPY main.go ./
-COPY run.sh ./
-COPY ./pkg ./pkg
-COPY ./visualizer ./visualizer
-
-RUN chmod +x run.sh
-RUN CGO_ENABLED=0 GOOS=linux go build -o ./circular-dependency-detector
-
-CMD ["./run.sh"]
+ENTRYPOINT ["sh", "/app/entrypoint.sh"]

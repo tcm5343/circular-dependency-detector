@@ -5,59 +5,27 @@ on:
       - main
 
 jobs:
-  circular-dependency-detector:
+  cdd-e2e:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        input_file:
+          - adj_list_cycle.txt
+          - adj_list_no_cycle.txt
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v4
         with:
-          ref: dev
+          repository: ${{ github.repository }}
+          ref: ${{ github.GITHUB_REF_NAME }}  # current branch name
+          path: './test/'
 
-          # - name: Generate Adjacency List
-          #   id: adj-list
-          #   run: |  
-          #     echo "adj-list-artifact-path<<EOF" >> $GITHUB_OUTPUT
-        
-          #     # here we can place the command that will generate multi-line text
-          #     echo $(cat adjacency_list.txt) >> $GITHUB_OUTPUT 
-              
-          #     echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Generate Adjacency List
-        id: adj-list
-        run: |  
-          filename="adjacency_list.txt"
-          echo ./adjacency_list.txt > ${filename}
-          echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
-
-      - name: Upload Adjacency List
-        uses: actions/upload-artifact@v3
+      - name: install task
+        uses: arduino/setup-task@v2
         with:
-          name: adj-list
-          path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Print Adjacency List
-      #   run: |
-      #     ls
-      #     pwd
-      #     echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
-
-      - name: Circular Dependency Detector
-        id: circular-dependency-detector
-        #uses: actions/circular-dependency-detector@v2
-        uses: ./
-        with:
-          adjacency_list_path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
-
-    # outputs:
-    #   adj-list-artifact-path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
-
-  # circular-dependency-detector:
-  #   needs: build-adjacency-list
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         ref: miller-init
-
+      - name: task run
+        run: |
+          cd  test/
+          task INPUT_FILE="testing/data/${{ matrix.input_file }}" run
