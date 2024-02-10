@@ -26,4 +26,3 @@ INPUT_FILE=testing/data/adj_list_no_cycle.txt  # no spaces for now, defaults to 
 
 ## Musical Acknowledgements
 Bob Dylan - Early Mornin' Rain</br>
-Galt MacDermot - Ripped Open By Metal Explosion</br>
