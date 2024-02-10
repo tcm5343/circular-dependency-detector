@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"log/slog"
 	"os"
-
-	"strconv"
 
 	"gonum.org/v1/gonum/graph/topo"
 
@@ -14,6 +13,9 @@ import (
 func main() {
 	argsWithoutProg := os.Args[1:]
 	inputGraphPath := argsWithoutProg[0]
+
+	slog.SetLogLoggerLevel(slog.LevelDebug)
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	// fmt.Println(argsWithoutProg)
 	// fmt.Println("/app/" + inputGraphPath)
@@ -30,20 +32,15 @@ func main() {
 	}
 
 	cycles := topo.DirectedCyclesIn(wg.Graph)
-	numberOfCycles := strconv.Itoa(len(cycles))
-
-	fmt.Println(numberOfCycles + " cycle(s) identified")
+	slog.Debug("directed cycles in", "count", len(cycles), "cycles", cycles)
 
 	if len(cycles) > 0 {
-		fmt.Println(cycles)
-		fmt.Println("skipping topological generations . . .")
+		slog.Info("skipping topological generations . . .")
 	} else {
 		tg, err := graph.TopologicalGenerationsOf(wg.Graph)
 		if err != nil {
 			panic(err)
 		}
-
-		fmt.Print("topological generations: ")
-		fmt.Println(tg)
+		slog.Info("topological generations", "generations", tg)
 	}
 }

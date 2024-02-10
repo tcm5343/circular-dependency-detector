@@ -4,12 +4,9 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
-	// "os"
-	// "strconv"
+	"log/slog"
 	"strings"
 
-	// "gonum.org/v1/gonum/graph/simple"
-	// "gonum.org/v1/gonum/graph"
 	"gonum.org/v1/gonum/graph/multi"
 )
 
@@ -31,14 +28,12 @@ import (
 // func (n node) String() string { return n.word }
 
 type WordGraph struct {
-	n     int
 	ids   map[string]int64
 	Graph *multi.DirectedGraph
 }
 
 func newWordGraph() WordGraph {
 	return WordGraph{
-		n:     0,
 		ids:   make(map[string]int64),
 		Graph: multi.NewDirectedGraph(),
 	}
@@ -47,28 +42,22 @@ func newWordGraph() WordGraph {
 func (g *WordGraph) include(idFrom string, idsTo []string) {
 	// handle source node
 	if _, exists := g.ids[idFrom]; !exists {
-		// fmt.Printf("%v does not exist in map yet, adding\n", idFrom)
-		// add node to graph
 		u := g.Graph.NewNode()
 		g.Graph.AddNode(u)
 		g.ids[idFrom] = u.ID()
-	} else {
-		// fmt.Printf("%v already exists in map\n", idFrom)
 	}
 	fromNode, _ := g.Graph.NodeWithID(g.ids[idFrom])
 
 	// handle destination nodes
 	for _, element := range idsTo {
-		if toNodeId, exists := g.ids[element]; !exists {
-			// fmt.Printf("%v does not exist in map yet\n", element)
+		if _, exists := g.ids[element]; !exists {
 			toNode := g.Graph.NewNode()
 			g.Graph.AddNode(toNode)
 			g.ids[element] = toNode.ID()
 			g.Graph.SetLine(g.Graph.NewLine(fromNode, toNode))
-		} else {
-			// fmt.Printf("node existed, adding edge from %v to %v\n", idFrom, element)
-			g.Graph.SetLine(g.Graph.NewLine(fromNode, g.Graph.Node(toNodeId)))
 		}
+		slog.Debug("adding edge", "sourceNode", idFrom, "destinationNode", element)
+		g.Graph.SetLine(g.Graph.NewLine(fromNode, g.Graph.Node(g.ids[element])))
 	}
 }
 
