@@ -27,7 +27,8 @@ jobs:
         id: adj-list
         run: |  
           filename="adjacency_list.txt"
-          echo ./testing/adj_list_with_cycle.txt > ${filename}
+          echo ./adjacency_list.txt > ${filename}
+          pwd
           echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
 
       - name: Upload Adjacency List
@@ -48,6 +49,13 @@ jobs:
         uses: ./
         with:
           adjacency_list_path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+
+      # - name: circular-dependency-detector
+      #   uses: tcm5343/circular-dependency-detector@v0.1.0-alpha
+      #   with:
+      #     adjacency_list_path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
+
+      
 
     # outputs:
     #   adj-list-artifact-path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
