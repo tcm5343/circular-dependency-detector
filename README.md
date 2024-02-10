@@ -6,7 +6,7 @@ A GitHub action, containerized and written in Go, to detect simple cycles or top
 
 
 ## Contributing
-For local development, creating a `.env` file at the root of the repository to modify your config.
+For local development, creating a `.env` file at the root of the repository to modify your config. The only supported format for the input graph file (`INPUT_FILE`) is an adjacency list which follows the format as used by [NetworkX](https://networkx.org/documentation/stable/reference/readwrite/adjlist.html#).
 ```text
 INPUT_FILE="testing/data/adj_list_no_cycle.txt"  # no spaces in path for now, defaults to ... idk
 ```
@@ -19,6 +19,8 @@ INPUT_FILE="testing/data/adj_list_no_cycle.txt"  # no spaces in path for now, de
 * Allow the input file to define nodes as strings instead of just integers (use a set and map)
 * Input the NetworkX adjacency list format
 * Write unit tests
+* Exit early if cycles are identified
+* Error handling
 
 ## Musical Acknowledgements
 Bob Dylan - Early Mornin' Rain

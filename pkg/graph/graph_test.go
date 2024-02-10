@@ -1,17 +1,35 @@
 package graph
 
 import (
-	"regexp"
+	// "regexp"
+	"fmt"
 	"testing"
 )
 
-// TestHelloName calls greetings.Hello with a name, checking
-// for a valid return value.
-func TestTopologicalGenerationsOf(t *testing.T) {
-	name := "Gladys"
-	want := regexp.MustCompile(`\b` + name + `\b`)
-	msg := "Gladys"
-	if !want.MatchString(msg) {
-		t.Fatalf(`Hello("Gladys") = %q, , want match for %#q, nil`, msg, want)
-	}
+func TestTopologicalGenerationsOfCyclicGraph(t *testing.T) {
+	fmt.Println("TestTopologicalGenerationsOfCyclicGraph")
+}
+
+func TestTopologicalGenerationsOfAcyclicGraph(t *testing.T) {
+	fmt.Println("TestTopologicalGenerationsOfAcyclicGraph")
+}
+
+func TestTopologicalGenerationsOfMultiGraph(t *testing.T) {
+	fmt.Println("TestTopologicalGenerationsOfMultiGraph")
+}
+
+func TestTopologicalGenerationsOfEmptyGraph(t *testing.T) {
+	fmt.Println("TestTopologicalGenerationsOfEmptyGraph")
+}
+
+func TestBuildDirectedGraphFileNotFoundError(t *testing.T) {
+	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
+}
+
+func TestBuildDirectedGraphOfEmptyFile(t *testing.T) {
+	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
+}
+
+func TestBuildDirectedGraphOfFile(t *testing.T) {
+	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
 }

@@ -1,8 +1,5 @@
 version: '3'
 
-# env:
-#   ENV: testing
-
 dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
 
 tasks:
@@ -25,4 +22,4 @@ tasks:
   test:
     deps: [build]
     cmds:
-      - docker run --entrypoint 'go' circular-dependency-detector test /app/...
+      - docker run --entrypoint 'go' circular-dependency-detector test -v /app/...
