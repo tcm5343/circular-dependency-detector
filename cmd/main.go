@@ -17,7 +17,13 @@ func main() {
 	// fmt.Println(argsWithoutProg)
 	// fmt.Println("/app/" + inputGraphPath)
 
-	dg, err := graph.BuildDirectedGraph("/app/" + inputGraphPath) // fix: this path can't contain spaces for some reason...
+	fp, err := os.Open("/app/" + inputGraphPath) // fix: this path can't contain spaces for some reason...
+	if err != nil {
+		panic(err)
+	}
+	defer fp.Close()
+
+	dg, err := graph.BuildDirectedGraph(fp)
 	if err != nil {
 		panic(err)
 	}
