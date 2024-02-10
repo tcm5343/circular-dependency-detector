@@ -8,7 +8,7 @@ runs:
   using: "docker"
   image: 'Dockerfile'
   args:
-    test: ${{ inputs.adjacency_list_path }}
+    - {{ inputs.adjacency_list_path }}
 
 # name: 'circular-dependency-detector'
 # description: 'Detect and output cycles and topological generations given a directed graph.'
