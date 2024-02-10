@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+
 	"strconv"
 
 	"gonum.org/v1/gonum/graph/topo"
@@ -23,21 +24,21 @@ func main() {
 	}
 	defer fp.Close()
 
-	dg, err := graph.BuildDirectedGraph(fp)
+	wg, err := graph.BuildDirectedGraph(fp)
 	if err != nil {
 		panic(err)
 	}
 
-	cycles := topo.DirectedCyclesIn(dg)
+	cycles := topo.DirectedCyclesIn(wg.Graph)
 	numberOfCycles := strconv.Itoa(len(cycles))
 
 	fmt.Println(numberOfCycles + " cycle(s) identified")
 
 	if len(cycles) > 0 {
 		fmt.Println(cycles)
-		fmt.Println("skipping topological generation . . .")
+		fmt.Println("skipping topological generations . . .")
 	} else {
-		tg, err := graph.TopologicalGenerationsOf(dg)
+		tg, err := graph.TopologicalGenerationsOf(wg.Graph)
 		if err != nil {
 			panic(err)
 		}

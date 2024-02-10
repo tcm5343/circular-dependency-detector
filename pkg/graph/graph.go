@@ -3,39 +3,108 @@ package graph
 import (
 	"encoding/csv"
 	"fmt"
-	"os"
-	"strconv"
+	"io"
+	// "os"
+	// "strconv"
+	"strings"
 
 	// "gonum.org/v1/gonum/graph/simple"
+	// "gonum.org/v1/gonum/graph"
 	"gonum.org/v1/gonum/graph/multi"
 )
 
-func BuildDirectedGraph(filePath string) (*multi.DirectedGraph, error) {
-	fp, err := os.Open(filePath)
-	if err != nil {
-		panic(err)
-	}
-	defer fp.Close()
+// func (g WordGraph) nodeFor(word string) graph.Node {
+// 	id, ok := g.ids[word]
+// 	if !ok {
+// 		return nil
+// 	}
+// 	return g.UndirectedGraph.Node(id)
+// }
 
-	reader := csv.NewReader(fp)
+// // node is a word node in a WordGraph.
+// type node struct {
+// 	word string
+// 	id   int64
+// }
+
+// func (n node) ID() int64      { return n.id }
+// func (n node) String() string { return n.word }
+
+type WordGraph struct {
+	n     int
+	ids   map[string]int64
+	Graph *multi.DirectedGraph
+}
+
+func newWordGraph() WordGraph {
+	return WordGraph{
+		n:     0,
+		ids:   make(map[string]int64),
+		Graph: multi.NewDirectedGraph(),
+	}
+}
+
+func (g *WordGraph) include(idFrom string, idsTo []string) {
+	// handle source node
+	if _, exists := g.ids[idFrom]; !exists {
+		// fmt.Printf("%v does not exist in map yet, adding\n", idFrom)
+		// add node to graph
+		u := g.Graph.NewNode()
+		g.Graph.AddNode(u)
+		g.ids[idFrom] = u.ID()
+	} else {
+		// fmt.Printf("%v already exists in map\n", idFrom)
+	}
+	fromNode, _ := g.Graph.NodeWithID(g.ids[idFrom])
+
+	// handle destination nodes
+	for _, element := range idsTo {
+		if toNodeId, exists := g.ids[element]; !exists {
+			// fmt.Printf("%v does not exist in map yet\n", element)
+			toNode := g.Graph.NewNode()
+			g.Graph.AddNode(toNode)
+			g.ids[element] = toNode.ID()
+			g.Graph.SetLine(g.Graph.NewLine(fromNode, toNode))
+		} else {
+			// fmt.Printf("node existed, adding edge from %v to %v\n", idFrom, element)
+			g.Graph.SetLine(g.Graph.NewLine(fromNode, g.Graph.Node(toNodeId)))
+		}
+	}
+}
+
+func removeElementsAfterPrefix(slice []string, prefix string) []string {
+	// If a string in the slice starts with the prefix, remove it and all elements to the right of it
+	for i, str := range slice {
+		if strings.HasPrefix(str, prefix) {
+			return slice[:i]
+		}
+	}
+	return slice
+}
+
+func BuildDirectedGraph(inputFile io.Reader) (*WordGraph, error) {
+	delimiter := ' '     // todo: make this a parameter
+	commentMarker := "#" // todo: make this a parameter
+
+	reader := csv.NewReader(inputFile)
 	reader.FieldsPerRecord = -1
-	reader.Comma = ' '
-	dg := multi.NewDirectedGraph()
+	reader.Comma = delimiter
+
+	wg := newWordGraph()
 
 	lines, err := reader.ReadAll()
 	if err != nil {
-		return dg, fmt.Errorf("error reading adjacency list: %w", err)
+		return &wg, fmt.Errorf("error reading adjacency list: %w", err)
 	}
 
 	for _, line := range lines {
-		idFrom, _ := strconv.ParseInt(line[0], 10, 64)
-		idTo, _ := strconv.ParseInt(line[1], 10, 64)
-		dg.SetLine(dg.NewLine(multi.Node(idFrom), multi.Node(idTo)))
+		if !strings.HasPrefix(line[0], commentMarker) { // check if entire line is a comment
+			wg.include(line[0], removeElementsAfterPrefix(line[1:], commentMarker)) // todo: this is inefficient since we loop over toNodes twice, improve
+		} else {
+			// fmt.Printf("skipping %v due to entire line being a comment\n", line)
+		}
 	}
-
-	// fmt.Println(strconv.Itoa(dg.Nodes().Len()) + " node(s) and " + strconv.Itoa(len(lines)) + " edge(s) identified")
-
-	return dg, nil
+	return &wg, nil
 }
 
 func TopologicalGenerationsOf(dg *multi.DirectedGraph) ([][]int, error) {
