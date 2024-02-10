@@ -27,6 +27,7 @@ INPUT_FILE=testing/data/adj_list_no_cycle.txt  # no spaces for now, defaults to 
 * Allow the input file to define nodes as strings instead of just integers (use a set and map)
 * Exit early if cycles are identified
 * Input other NetworkX output formats
+* `testing/data_generation` to create graphs using NetworkX with specific properties
 
 ## Musical Acknowledgements
 Bob Dylan - Early Mornin' Rain</br>
