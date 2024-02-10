@@ -24,45 +24,6 @@ jobs:
           cd  test/
           task INPUT_FILE="testing/adj_list_cycle.txt" test
 
-      - name: Generate Adjacency List
-        # id: adj-list
-        run: |  
-          filename="adjacency_list.txt"
-          echo ./adjacency_list.txt > ${filename}
-          pwd
-          echo "adj-list-artifact-path=$(pwd)/${filename}" >> $GITHUB_OUTPUT
-
-
-      
-          # - name: Generate Adjacency List
-          #   id: adj-list
-          #   run: |  
-          #     echo "adj-list-artifact-path<<EOF" >> $GITHUB_OUTPUT
-        
-          #     # here we can place the command that will generate multi-line text
-          #     echo $(cat adjacency_list.txt) >> $GITHUB_OUTPUT 
-              
-          #     echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Upload Adjacency List
-        uses: actions/upload-artifact@v4
-        with:
-          name: adj-list
-          path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
-
-      # - name: Print Adjacency List
-      #   run: |
-      #     ls
-      #     pwd
-      #     echo ${{ steps.adj-list.outputs.adj-list-artifact-path }}
-
-      - name: Circular Dependency Detector
-        id: circular-dependency-detector
-        #uses: actions/circular-dependency-detector@v2
-        uses: ./test/
-        with:
-          adjacency_list_path: ${{ steps.adj-list.outputs.adj-list-artifact-path }}
-
       # - name: circular-dependency-detector
       #   uses: tcm5343/circular-dependency-detector@v0.1.0-alpha
       #   with:
