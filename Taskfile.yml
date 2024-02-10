@@ -1,0 +1,21 @@
+version: '3'
+
+env:
+  ENV: testing
+
+# dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+
+tasks:
+  build:
+    cmds:
+      - docker build -t circular-dependency-detector .
+
+  run:
+    deps: [build]
+    cmds:
+      - docker run circular-dependency-detector
+
+  test:
+    deps: [build]
+    cmds:
+      - docker run circular-dependency-detector go test /app/...
