@@ -7,6 +7,11 @@ on:
 jobs:
   circular-dependency-detector:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        input_file:
+          - adj_list_cycle.txt
+          - adj_list_no_cycle.txt
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,7 +27,7 @@ jobs:
         id: adj-list
         run: |
           cd  test/
-          task INPUT_FILE="testing/adj_list_cycle.txt" test
+          task INPUT_FILE="testing/${{ matrix.input_file }}" test
 
       # - name: circular-dependency-detector
       #   uses: tcm5343/circular-dependency-detector@v0.1.0-alpha
