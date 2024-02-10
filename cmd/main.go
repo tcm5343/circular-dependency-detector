@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	dg, err := graph.BuildDirectedGraph("/app/testing/adj_list_with_cycle.txt")
+	dg, err := graph.BuildDirectedGraph("/app/testing/adj_list_no_cycle.txt")
 	if err != nil {
 		panic(err)
 	}

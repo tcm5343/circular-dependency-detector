@@ -9,10 +9,11 @@ tasks:
   build:
     cmds:
       - docker build -t circular-dependency-detector .
-    sources:
-      - cmd/**/*.go
-      - pkg/**/*.go
-      - testing/**/*.go
+    sources:  # can this be shared?
+      - ./**/*.go
+      - ./**/*.mod
+      - ./**/*.sum
+      - testing/**/*
 
   run:
     deps: [build]
