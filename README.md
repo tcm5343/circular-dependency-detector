@@ -6,22 +6,24 @@ A GitHub action, containerized and written in Go, to detect simple cycles or top
 
 
 ## Contributing
-For local development, creating a `.env` file at the root of the repository to modify your config. The only supported format for the input graph file (`INPUT_FILE`) is an adjacency list which follows the format as used by [NetworkX](https://networkx.org/documentation/stable/reference/readwrite/adjlist.html#).
-```text
-INPUT_FILE="testing/data/adj_list_no_cycle.txt"  # no spaces in path for now, defaults to ... idk
+[Task](https://taskfile.dev/) shall be used in the CI/CD pipelines and for local development. Run `task --list-all` for the list of tasks. For local development, create a `.env` file at the root of the repository to modify your config. The only supported format for the input graph file environment variable (`INPUT_FILE`) is an adjacency list which follows the format used by [NetworkX](https://networkx.org/documentation/stable/reference/readwrite/adjlist.html#).
+
+```shell
+user@machine:~/dev/circular-dependency-detector$ cat ./.env 
+INPUT_FILE=testing/data/adj_list_no_cycle.txt  # no spaces for now, defaults to {i don't know yet}
 ```
 
-[Task](https://taskfile.dev/) shall be used in the CI/CD pipelines and for local development. Run `task --list-all` for an update to date list of tasks.
-
-## Todo
+## Todo (ordered)
+* Use graph generated in a workflow and pass it to the container
+* Write unit tests
+* Error handling
+* Logging
 * Return 2d slice of nodes instead of integers from topological generations
 * Consider edge cases involving multi-graphs in topological generations
 * Allow the input file to define nodes as strings instead of just integers (use a set and map)
-* Input the NetworkX adjacency list format
-* Write unit tests
 * Exit early if cycles are identified
-* Error handling
+* Input other NetworkX output formats
 
 ## Musical Acknowledgements
-Bob Dylan - Early Mornin' Rain
-Galt MacDermot - Ripped Open By Metal Explosion
+Bob Dylan - Early Mornin' Rain</br>
+Galt MacDermot - Ripped Open By Metal Explosion</br>

@@ -33,3 +33,11 @@ func TestBuildDirectedGraphOfEmptyFile(t *testing.T) {
 func TestBuildDirectedGraphOfFile(t *testing.T) {
 	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
 }
+
+func TestBuildDirectedGraphOfFileWithStrings(t *testing.T) {
+	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
+}
+
+func TestBuildDirectedGraphHandlesEmptyLines(t *testing.T) {
+	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
+}
