@@ -1,0 +1,8 @@
+# 4 nodes, 3 edges
+# this does not output the expected topological generation
+# this is primarily to test comments are ignored
+0 1 # example comment
+0 2 # existing source node
+1 2
+2 3
+4 # example comment on a node with no outgoing edges
