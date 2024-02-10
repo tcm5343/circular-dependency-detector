@@ -20,7 +20,8 @@ jobs:
 
       - name: Run branch specific circular dependency detector
         id: adj-list
-        run: |  
+        run: |
+          cd  test/
           task INPUT_FILE="testing/adj_list_cycle.txt" test
 
       - name: Generate Adjacency List
