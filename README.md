@@ -20,13 +20,14 @@ INPUT_FILE=testing/data/adj_list_no_cycle.txt  # no spaces for now, defaults to 
 ## Todo
 * In a workflow, create a input graph file, and execute the action with it
 * Determine if project structure is idiomatic
+* Determine if `.env` or CLI args are better for configuration
 * Create build pipeline:
     * Add end to end testing of the program
     * Add linting to the pipeline
     * Add unit tests to the pipeline
 * `TopologicalGenerationsOf` should return a 2D slice of strings
-* Build out .env options
-    * `LOG_LEVEL` as defined [here](https://pkg.go.dev/golang.org/x/exp/slog#Level), should talk either string or int
+* Build out `.env` options
+    * `LOG_LEVEL` as defined [here](https://pkg.go.dev/golang.org/x/exp/slog#Level), should take both a string or an int value
 * Consider edge cases involving multi-graphs in topological generations
 * Input other NetworkX output formats
 * Python scripts:
