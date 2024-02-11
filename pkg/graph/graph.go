@@ -10,15 +10,15 @@ import (
 	"gonum.org/v1/gonum/graph/multi"
 )
 
-// func (g WordGraph) nodeFor(word string) graph.Node {
-// 	id, ok := g.ids[word]
+// func (g LabledGraph) nodeFor(word string) graph.Node {
+// 	id, ok := g.labels[word]
 // 	if !ok {
 // 		return nil
 // 	}
 // 	return g.UndirectedGraph.Node(id)
 // }
 
-// // node is a word node in a WordGraph.
+// // node is a word node in a LabledGraph.
 // type node struct {
 // 	word string
 // 	id   int64
@@ -27,37 +27,37 @@ import (
 // func (n node) ID() int64      { return n.id }
 // func (n node) String() string { return n.word }
 
-type WordGraph struct {
-	ids   map[string]int64
-	Graph *multi.DirectedGraph
+type LabledGraph struct {
+	labels map[string]int64
+	Graph  *multi.DirectedGraph
 }
 
-func newWordGraph() WordGraph {
-	return WordGraph{
-		ids:   make(map[string]int64),
-		Graph: multi.NewDirectedGraph(),
+func newLabledGraph() LabledGraph {
+	return LabledGraph{
+		labels: make(map[string]int64),
+		Graph:  multi.NewDirectedGraph(),
 	}
 }
 
-func (g *WordGraph) include(idFrom string, idsTo []string) {
+func (g *LabledGraph) include(idFrom string, idsTo []string) {
 	// handle source node
-	if _, exists := g.ids[idFrom]; !exists {
+	if _, exists := g.labels[idFrom]; !exists {
 		u := g.Graph.NewNode()
 		g.Graph.AddNode(u)
-		g.ids[idFrom] = u.ID()
+		g.labels[idFrom] = u.ID()
 	}
-	fromNode, _ := g.Graph.NodeWithID(g.ids[idFrom])
+	fromNode, _ := g.Graph.NodeWithID(g.labels[idFrom])
 
 	// handle destination nodes
 	for _, element := range idsTo {
-		if _, exists := g.ids[element]; !exists {
+		if _, exists := g.labels[element]; !exists {
 			toNode := g.Graph.NewNode()
 			g.Graph.AddNode(toNode)
-			g.ids[element] = toNode.ID()
+			g.labels[element] = toNode.ID()
 			g.Graph.SetLine(g.Graph.NewLine(fromNode, toNode))
 		}
 		slog.Debug("adding edge", "sourceNode", idFrom, "destinationNode", element)
-		g.Graph.SetLine(g.Graph.NewLine(fromNode, g.Graph.Node(g.ids[element])))
+		g.Graph.SetLine(g.Graph.NewLine(fromNode, g.Graph.Node(g.labels[element])))
 	}
 }
 
@@ -71,7 +71,7 @@ func removeElementsAfterPrefix(slice []string, prefix string) []string {
 	return slice
 }
 
-func BuildDirectedGraph(inputFile io.Reader) (*WordGraph, error) {
+func BuildDirectedGraph(inputFile io.Reader) (*LabledGraph, error) {
 	delimiter := ' '     // todo: make this a parameter
 	commentMarker := "#" // todo: make this a parameter
 
@@ -79,7 +79,7 @@ func BuildDirectedGraph(inputFile io.Reader) (*WordGraph, error) {
 	reader.FieldsPerRecord = -1
 	reader.Comma = delimiter
 
-	wg := newWordGraph()
+	wg := newLabledGraph()
 
 	lines, err := reader.ReadAll()
 	if err != nil {
