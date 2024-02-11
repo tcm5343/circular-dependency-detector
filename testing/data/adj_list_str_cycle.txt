@@ -1,0 +1,4 @@
+# 3 nodes, 3 edges
+a b
+b c
+c a

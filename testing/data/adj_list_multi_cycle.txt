@@ -1,0 +1,7 @@
+# multi graph that contains a cycle in one part of it
+0 1
+0 2
+2 3
+4 5
+5 6
+6 4
