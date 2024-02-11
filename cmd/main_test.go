@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"testing"
 )
 
-func testTopologicalGenerationsSkippedIfCyclesFound() {
+func TestTopologicalGenerationsSkippedIfCyclesFound(t *testing.T) {
 	fmt.Println("testTopologicalGenerationsSkippedIfCyclesFound")
 }
 
-func testTopologicalGenerationsSkippedIfNoCyclesFound() {
+func TestTopologicalGenerationsSkippedIfNoCyclesFound(t *testing.T) {
 	fmt.Println("testTopologicalGenerationsSkippedIfNoCyclesFound")
 }

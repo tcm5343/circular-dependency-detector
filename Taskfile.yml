@@ -25,10 +25,14 @@ tasks:
     deps: [build]
     cmds:
       - docker run --entrypoint 'go' circular-dependency-detector test -v /app/...
-  
-  # format:
-  #   cmds:
-  #     - 
+
+  lint:
+    desc: Runs golangci-lint
+    sources:
+      - './**/*.go'
+      - .golangci.yml
+    cmds:
+      - golangci-lint run
 
   # clean:
   #   cmds:

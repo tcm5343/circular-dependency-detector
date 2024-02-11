@@ -14,7 +14,7 @@ func main() {
 	argsWithoutProg := os.Args[1:]
 	inputGraphPath := argsWithoutProg[0]
 
-	slog.SetLogLoggerLevel(slog.LevelDebug)
+	slog.SetLogLoggerLevel(slog.LevelInfo)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	// fmt.Println(argsWithoutProg)

@@ -87,10 +87,8 @@ func BuildDirectedGraph(inputFile io.Reader) (*WordGraph, error) {
 	}
 
 	for _, line := range lines {
-		if !strings.HasPrefix(line[0], commentMarker) { // check if entire line is a comment
+		if !strings.HasPrefix(line[0], commentMarker) { // is entire line a comment
 			wg.include(line[0], removeElementsAfterPrefix(line[1:], commentMarker)) // todo: this is inefficient since we loop over toNodes twice, improve
-		} else {
-			// fmt.Printf("skipping %v due to entire line being a comment\n", line)
 		}
 	}
 	return &wg, nil
