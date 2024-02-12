@@ -41,6 +41,17 @@ func trimWhitespaceFromLines(input string) string { // todo: this should be unit
 	return strings.Join(lines, "\n")
 }
 
+func areValuesDistinct(m map[string]int64) bool {
+	seen := make(map[int64]struct{})
+	for _, v := range m {
+		if _, exists := seen[v]; exists {
+			return false // If the value has been seen before, not distinct
+		}
+		seen[v] = struct{}{}
+	}
+	return true // All values are distinct
+}
+
 func TestParseInputGraph(t *testing.T) {
 	input := trimWhitespaceFromLines(`
 	a b c
@@ -55,6 +66,17 @@ func TestParseInputGraph(t *testing.T) {
 			"ParseInputGraph(%v).Graph.Nodes().Len() = %v, want %v",
 			input, actualNodeCount, expectedNodeCount,
 		)
+	}
+
+	actualNumberOfLabels := len(lg.labels)
+	if actualNumberOfLabels != expectedNodeCount {
+		t.Errorf(
+			"len(ParseInputGraph(%v).labels) = %v, want %v",
+			input, actualNumberOfLabels, expectedNodeCount,
+		)
+	}
+	if !areValuesDistinct(lg.labels) {
+		t.Errorf("areValuesDistinct(%v) = false, want true", lg.labels)
 	}
 
 	expectedEdgeCount := 2
