@@ -95,8 +95,8 @@ func BuildDirectedGraph(inputFile io.Reader) (*LabledGraph, error) {
 }
 
 func TopologicalGenerationsOf(dg *multi.DirectedGraph) ([][]int, error) {
-	indegreeMap := make(map[int]int)
-	var zeroIndegree []int
+	inDegreeMap := make(map[int]int)
+	var zeroInDegree []int
 	var generations [][]int
 
 	nodes := dg.Nodes()
@@ -104,27 +104,27 @@ func TopologicalGenerationsOf(dg *multi.DirectedGraph) ([][]int, error) {
 		node := nodes.Node()
 		inNodes := dg.To(node.ID())
 		if inNodes.Len() > 0 {
-			indegreeMap[int(node.ID())] = inNodes.Len()
+			inDegreeMap[int(node.ID())] = inNodes.Len()
 		} else {
-			zeroIndegree = append(zeroIndegree, int(node.ID()))
+			zeroInDegree = append(zeroInDegree, int(node.ID()))
 		}
-		// fmt.Println(strconv.Itoa(int(node.ID())) + " has an indegree of " + strconv.Itoa(inNodes.Len()))
+		// fmt.Println(strconv.Itoa(int(node.ID())) + " has an in-degree of " + strconv.Itoa(inNodes.Len()))
 	}
 
-	for zeroIndegree != nil {
-		generations = append(generations, zeroIndegree)
-		zeroIndegree = nil
+	for zeroInDegree != nil {
+		generations = append(generations, zeroInDegree)
+		zeroInDegree = nil
 
 		for _, nodeId := range generations[len(generations)-1] {
 			outNodes := dg.From(int64(nodeId))
 			for outNodes.Next() {
 				node := outNodes.Node()
 				outNodeId := int(node.ID())
-				indegreeMap[outNodeId] -= 1
-				if indegreeMap[int(node.ID())] == 0 {
+				inDegreeMap[outNodeId] -= 1
+				if inDegreeMap[int(node.ID())] == 0 {
 					// fmt.Println("Adding " + strconv.Itoa(outNodeId) + " to zeroIndegree slice")
-					zeroIndegree = append(zeroIndegree, outNodeId)
-					delete(indegreeMap, outNodeId)
+					zeroInDegree = append(zeroInDegree, outNodeId)
+					delete(inDegreeMap, outNodeId)
 				}
 			}
 		}
