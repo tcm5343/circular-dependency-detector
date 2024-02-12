@@ -1,6 +1,6 @@
 #  circular-dependency-detector
 ## What?
-A GitHub action, containerized and written in Go, to detect simple cycles or topological generations in directed multi-graphs. 
+A GitHub action, containerized and written in Go, to detect simple cycles or topological generations in directed multi-graphs. While this repo has utility, it is not novel and serves primarily pedagogical purposes. 
 
 This project was first implemented at the University of Texas at Austin as a group project with [tcm5343](https://github.com/tcm5343), [pabs159](https://github.com/pabs159), and [rory-tatum](https://github.com/rory-tatum). A use case was identified that applied to our industry experience.
 
