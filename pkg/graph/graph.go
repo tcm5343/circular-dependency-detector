@@ -86,7 +86,7 @@ func ParseInputGraph(inputFile io.Reader) (*LabledGraph, error) {
 
 	lines, err := reader.ReadAll()
 	if err != nil {
-		return &lg, fmt.Errorf("error reading adjacency list: %w", err)
+		return &lg, fmt.Errorf("error reading adjacency list input: %w", err)
 	}
 
 	for _, line := range lines {
