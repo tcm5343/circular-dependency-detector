@@ -71,32 +71,36 @@ func removeElementsAfterPrefix(slice []string, prefix string) []string {
 	return slice
 }
 
-func BuildDirectedGraph(inputFile io.Reader) (*LabledGraph, error) {
+func ParseInputGraph(inputFile io.Reader) (*LabledGraph, error) {
 	delimiter := ' '     // todo: make this a parameter
 	commentMarker := "#" // todo: make this a parameter
+
+	// todo: the delimiter may not be the same as the comment marker
+	// todo: no node name may contain the delimiter or commentMarker
 
 	reader := csv.NewReader(inputFile)
 	reader.FieldsPerRecord = -1
 	reader.Comma = delimiter
 
-	wg := newLabledGraph()
+	lg := newLabledGraph()
 
 	lines, err := reader.ReadAll()
 	if err != nil {
-		return &wg, fmt.Errorf("error reading adjacency list: %w", err)
+		return &lg, fmt.Errorf("error reading adjacency list input: %w", err)
 	}
 
 	for _, line := range lines {
+		// todo: check for empty lines too
 		if !strings.HasPrefix(line[0], commentMarker) { // is entire line a comment
-			wg.include(line[0], removeElementsAfterPrefix(line[1:], commentMarker)) // todo: this is inefficient since we loop over toNodes twice, improve
+			lg.include(line[0], removeElementsAfterPrefix(line[1:], commentMarker)) // todo: this is inefficient since we loop over toNodes twice, improve
 		}
 	}
-	return &wg, nil
+	return &lg, nil
 }
 
 func TopologicalGenerationsOf(dg *multi.DirectedGraph) ([][]int, error) {
-	indegreeMap := make(map[int]int)
-	var zeroIndegree []int
+	inDegreeMap := make(map[int]int)
+	var zeroInDegree []int
 	var generations [][]int
 
 	nodes := dg.Nodes()
@@ -104,27 +108,27 @@ func TopologicalGenerationsOf(dg *multi.DirectedGraph) ([][]int, error) {
 		node := nodes.Node()
 		inNodes := dg.To(node.ID())
 		if inNodes.Len() > 0 {
-			indegreeMap[int(node.ID())] = inNodes.Len()
+			inDegreeMap[int(node.ID())] = inNodes.Len()
 		} else {
-			zeroIndegree = append(zeroIndegree, int(node.ID()))
+			zeroInDegree = append(zeroInDegree, int(node.ID()))
 		}
-		// fmt.Println(strconv.Itoa(int(node.ID())) + " has an indegree of " + strconv.Itoa(inNodes.Len()))
+		// fmt.Println(strconv.Itoa(int(node.ID())) + " has an in-degree of " + strconv.Itoa(inNodes.Len()))
 	}
 
-	for zeroIndegree != nil {
-		generations = append(generations, zeroIndegree)
-		zeroIndegree = nil
+	for zeroInDegree != nil {
+		generations = append(generations, zeroInDegree)
+		zeroInDegree = nil
 
 		for _, nodeId := range generations[len(generations)-1] {
 			outNodes := dg.From(int64(nodeId))
 			for outNodes.Next() {
 				node := outNodes.Node()
 				outNodeId := int(node.ID())
-				indegreeMap[outNodeId] -= 1
-				if indegreeMap[int(node.ID())] == 0 {
+				inDegreeMap[outNodeId] -= 1
+				if inDegreeMap[int(node.ID())] == 0 {
 					// fmt.Println("Adding " + strconv.Itoa(outNodeId) + " to zeroIndegree slice")
-					zeroIndegree = append(zeroIndegree, outNodeId)
-					delete(indegreeMap, outNodeId)
+					zeroInDegree = append(zeroInDegree, outNodeId)
+					delete(inDegreeMap, outNodeId)
 				}
 			}
 		}
