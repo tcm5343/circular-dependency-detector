@@ -33,7 +33,7 @@ type testEdge = struct {
 // 	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
 // }
 
-func trimWhitespaceFromLines(input string) string { // todo: this should be unit tested too
+func trimWhitespaceFromLines(input string) string { // todo: move to internal/testing.go and unit test
 	lines := strings.Split(input, "\n")
 	for i, line := range lines {
 		lines[i] = strings.TrimLeft(line, " \t") // trim leading spaces and tabs
@@ -41,7 +41,7 @@ func trimWhitespaceFromLines(input string) string { // todo: this should be unit
 	return strings.Join(lines, "\n")
 }
 
-func areValuesDistinct(m map[string]int64) bool {
+func areValuesDistinct(m map[string]int64) bool { // todo: move to internal/testing.go and unit test
 	seen := make(map[int64]struct{})
 	for _, v := range m {
 		if _, exists := seen[v]; exists {

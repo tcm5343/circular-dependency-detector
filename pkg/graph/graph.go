@@ -75,6 +75,9 @@ func ParseInputGraph(inputFile io.Reader) (*LabledGraph, error) {
 	delimiter := ' '     // todo: make this a parameter
 	commentMarker := "#" // todo: make this a parameter
 
+	// todo: the delimiter may not be the same as the comment marker
+	// todo: no node name may contain the delimiter or commentMarker
+
 	reader := csv.NewReader(inputFile)
 	reader.FieldsPerRecord = -1
 	reader.Comma = delimiter
