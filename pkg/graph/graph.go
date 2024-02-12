@@ -71,7 +71,7 @@ func removeElementsAfterPrefix(slice []string, prefix string) []string {
 	return slice
 }
 
-func BuildDirectedGraph(inputFile io.Reader) (*LabledGraph, error) {
+func ParseInputGraph(inputFile io.Reader) (*LabledGraph, error) {
 	delimiter := ' '     // todo: make this a parameter
 	commentMarker := "#" // todo: make this a parameter
 

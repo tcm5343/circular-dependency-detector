@@ -26,7 +26,7 @@ func main() {
 	}
 	defer fp.Close()
 
-	wg, err := graph.BuildDirectedGraph(fp)
+	wg, err := graph.ParseInputGraph(fp)
 	if err != nil {
 		panic(err)
 	}

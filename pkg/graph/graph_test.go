@@ -3,7 +3,9 @@ package graph
 import (
 	// "regexp"
 	// "fmt"
+	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -27,9 +29,11 @@ import (
 // 	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
 // }
 
-// func TestBuildDirectedGraphOfEmptyFile(t *testing.T) {
-// 	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
-// }
+func TestParseInputGraphOfEmptyFile(t *testing.T) {
+	input := strings.TrimSpace(``)
+	wg, _ := ParseInputGraph(strings.NewReader(input))
+	fmt.Println(wg.Graph.Nodes().Len())
+}
 
 // func TestBuildDirectedGraphOfFile(t *testing.T) {
 // 	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
@@ -44,33 +48,21 @@ import (
 // }
 
 func TestRemoveElementsAfterPrefix(t *testing.T) {
-	expected := []string{"a"}
-	actual := removeElementsAfterPrefix([]string{"a", "#b", "c"}, "#")
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("%v != %v", actual, expected)
+	var tests = []struct {
+		slice    []string
+		prefix   string
+		expected []string
+	}{
+		{[]string{"a", "#b", "c"}, "#", []string{"a"}},
+		{[]string{}, "#", []string{}},                    // empty slice
+		{[]string{"a"}, "", []string{}},                  // empty prefix
+		{[]string{"a#", "#b", "c"}, "#", []string{"a#"}}, // only checks prefix
 	}
-}
 
-func TestRemoveElementsAfterPrefixOnlyChecksPrefix(t *testing.T) {
-	expected := []string{"a#"}
-	actual := removeElementsAfterPrefix([]string{"a#", "#b", "c"}, "#")
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("%v != %v", actual, expected)
-	}
-}
-
-func TestRemoveElementsAfterPrefixIfEmptySlice(t *testing.T) {
-	expected := []string{}
-	actual := removeElementsAfterPrefix([]string{}, "#")
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("%v != %v", actual, expected)
-	}
-}
-
-func TestRemoveElementsAfterPrefixIfEmptyPrefix(t *testing.T) {
-	expected := []string{}
-	actual := removeElementsAfterPrefix([]string{"a", "b"}, "")
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("%v != %v", actual, expected)
+	for _, test := range tests {
+		actual := removeElementsAfterPrefix(test.slice, test.prefix)
+		if !reflect.DeepEqual(actual, test.expected) {
+			t.Errorf("%v != %v", actual, test.expected)
+		}
 	}
 }
