@@ -2,12 +2,16 @@ package graph
 
 import (
 	// "regexp"
-	// "fmt"
-	"fmt"
 	"reflect"
 	"strings"
 	"testing"
 )
+
+type testEdge = struct {
+	from     string
+	to       string
+	expected bool
+}
 
 // func TestTopologicalGenerationsOfCyclicGraph(t *testing.T) {
 // 	fmt.Println("TestTopologicalGenerationsOfCyclicGraph")
@@ -29,10 +33,76 @@ import (
 // 	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
 // }
 
+func trimWhitespaceFromLines(input string) string { // todo: this should be unit tested too
+	lines := strings.Split(input, "\n")
+	for i, line := range lines {
+		lines[i] = strings.TrimLeft(line, " \t") // trim leading spaces and tabs
+	}
+	return strings.Join(lines, "\n")
+}
+
 func TestParseInputGraph(t *testing.T) {
-	input := strings.TrimSpace(``)
-	wg, _ := ParseInputGraph(strings.NewReader(input))
-	fmt.Println(wg.Graph.Nodes().Len())
+	input := trimWhitespaceFromLines(`
+	a b c
+    d
+	`)
+	lg, _ := ParseInputGraph(strings.NewReader(input))
+
+	expectedNodeCount := 4
+	actualNodeCount := lg.Graph.Nodes().Len()
+	if actualNodeCount != expectedNodeCount {
+		t.Errorf(
+			"ParseInputGraph(%v).Graph.Nodes().Len() = %v, want %v",
+			input, actualNodeCount, expectedNodeCount,
+		)
+	}
+
+	expectedEdgeCount := 2
+	actualEdgeCount := lg.Graph.Edges().Len()
+	if expectedEdgeCount != actualEdgeCount {
+		t.Errorf(
+			"ParseInputGraph(%v).Graph.Edges().Len() = %v, want %v",
+			input, actualEdgeCount, expectedEdgeCount,
+		)
+	}
+
+	testEdges := []testEdge{
+		{"a", "a", false},
+		{"a", "b", true},
+		{"a", "c", true},
+		{"a", "d", false},
+		{"b", "a", false},
+		{"b", "b", false},
+		{"b", "c", false},
+		{"b", "d", false},
+		{"c", "a", false},
+		{"c", "b", false},
+		{"c", "c", false},
+		{"c", "d", false},
+		{"d", "a", false},
+		{"d", "b", false},
+		{"d", "c", false},
+		{"d", "d", false},
+	}
+
+	// this may seem excessive but caught a bug
+	expectedTestEdgesCount := expectedNodeCount * expectedNodeCount
+	actualTestEdgesCount := len(testEdges)
+	if actualTestEdgesCount != expectedTestEdgesCount {
+		t.Errorf("Found %v edge test cases, want %v for full coverage",
+			actualTestEdgesCount, expectedTestEdgesCount,
+		)
+	}
+
+	for _, testEdge := range testEdges {
+		actual := lg.Graph.HasEdgeFromTo(lg.labels[testEdge.from], lg.labels[testEdge.to])
+		if actual != testEdge.expected {
+			t.Errorf(
+				"ParseInputGraph(%v).Graph.HasEdgeFromTo(%v, %v) = %v, want %v",
+				input, testEdge.from, testEdge.to, actual, testEdge.expected,
+			)
+		}
+	}
 }
 
 // func TestBuildDirectedGraphOfFile(t *testing.T) {

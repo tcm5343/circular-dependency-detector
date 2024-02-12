@@ -79,19 +79,20 @@ func ParseInputGraph(inputFile io.Reader) (*LabledGraph, error) {
 	reader.FieldsPerRecord = -1
 	reader.Comma = delimiter
 
-	wg := newLabledGraph()
+	lg := newLabledGraph()
 
 	lines, err := reader.ReadAll()
 	if err != nil {
-		return &wg, fmt.Errorf("error reading adjacency list: %w", err)
+		return &lg, fmt.Errorf("error reading adjacency list: %w", err)
 	}
 
 	for _, line := range lines {
+		// todo: check for empty lines too
 		if !strings.HasPrefix(line[0], commentMarker) { // is entire line a comment
-			wg.include(line[0], removeElementsAfterPrefix(line[1:], commentMarker)) // todo: this is inefficient since we loop over toNodes twice, improve
+			lg.include(line[0], removeElementsAfterPrefix(line[1:], commentMarker)) // todo: this is inefficient since we loop over toNodes twice, improve
 		}
 	}
-	return &wg, nil
+	return &lg, nil
 }
 
 func TopologicalGenerationsOf(dg *multi.DirectedGraph) ([][]int, error) {

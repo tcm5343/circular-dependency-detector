@@ -26,18 +26,18 @@ func main() {
 	}
 	defer fp.Close()
 
-	wg, err := graph.ParseInputGraph(fp)
+	lg, err := graph.ParseInputGraph(fp)
 	if err != nil {
 		panic(err)
 	}
 
-	cycles := topo.DirectedCyclesIn(wg.Graph)
+	cycles := topo.DirectedCyclesIn(lg.Graph)
 	slog.Debug("directed cycles in", "count", len(cycles), "cycles", cycles)
 
 	if len(cycles) > 0 {
 		slog.Info("skipping topological generations . . .")
 	} else {
-		tg, err := graph.TopologicalGenerationsOf(wg.Graph)
+		tg, err := graph.TopologicalGenerationsOf(lg.Graph)
 		if err != nil {
 			panic(err)
 		}
