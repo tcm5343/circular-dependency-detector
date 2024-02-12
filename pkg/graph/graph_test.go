@@ -29,7 +29,7 @@ import (
 // 	fmt.Println("TestBuildDirectedGraphFileNotFoundError")
 // }
 
-func TestParseInputGraphOfEmptyFile(t *testing.T) {
+func TestParseInputGraph(t *testing.T) {
 	input := strings.TrimSpace(``)
 	wg, _ := ParseInputGraph(strings.NewReader(input))
 	fmt.Println(wg.Graph.Nodes().Len())
@@ -62,7 +62,10 @@ func TestRemoveElementsAfterPrefix(t *testing.T) {
 	for _, test := range tests {
 		actual := removeElementsAfterPrefix(test.slice, test.prefix)
 		if !reflect.DeepEqual(actual, test.expected) {
-			t.Errorf("%v != %v", actual, test.expected)
+			t.Errorf(
+				"TestRemoveElementsAfterPrefix(%v, %v) = %v, want %v",
+				test.slice, test.prefix, actual, test.expected,
+			)
 		}
 	}
 }
