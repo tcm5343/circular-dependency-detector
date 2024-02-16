@@ -1,5 +1,6 @@
 #  circular-dependency-detector
 [![Go Report Card](https://goreportcard.com/badge/github.com/tcm5343/circular-dependency-detector)](https://goreportcard.com/report/github.com/tcm5343/circular-dependency-detector)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ## What?
 A GitHub action, containerized and written in Go, to detect simple cycles or topological generations in directed multi-graphs. While this repo has utility, it is not novel and serves primarily pedagogical purposes. 
 
