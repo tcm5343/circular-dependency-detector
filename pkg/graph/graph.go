@@ -72,6 +72,7 @@ func removeElementsAfterPrefix(slice []string, prefix string) []string {
 }
 
 func ParseInputGraph(inputFile io.Reader) (*LabledGraph, error) {
+	// todo: set the delimiter and commentMarker via .env config and pass into function
 	delimiter := ' '     // todo: make this a parameter
 	commentMarker := "#" // todo: make this a parameter
 
