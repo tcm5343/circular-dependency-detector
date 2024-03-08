@@ -31,8 +31,8 @@ jobs:
       - name: circular-dependency-detector
         uses: tcm5343/circular-dependency-detector@dev
         with:
-          adjacency_list_path: testing/data/some-input-graph.txt
+          adjacency_list_path: ${GITHUB_WORKSPACE}/testing/data/some-input-graph.txt
       
       - name: task run
         run: |
-          task INPUT_FILE="testing/data/some-input-graph.txt" run
+          task INPUT_FILE="/app/testing/data/some-input-graph.txt" run

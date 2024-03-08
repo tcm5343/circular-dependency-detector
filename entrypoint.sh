@@ -4,11 +4,12 @@ set -e
 
 INPUT_FILE=$1
 
+ls
 ls ./testing/data
 pwd
 
 # build source code
-CGO_ENABLED=0 GOOS=linux go build -o /app/circular-dependency-detector
+# CGO_ENABLED=0 GOOS=linux go build -o /app/circular-dependency-detector
 
 /app/circular-dependency-detector $INPUT_FILE
 # python3 ./visualizer/visualize.py
