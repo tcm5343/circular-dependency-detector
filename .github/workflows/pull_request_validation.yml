@@ -29,7 +29,7 @@ jobs:
           echo -e "1 2\n2 3\n3 1" > testing/data/some-input-graph.txt
       
       - name: circular-dependency-detector
-        uses: tcm5343/circular-dependency-detector@v0.2.0-alpha
+        uses: tcm5343/circular-dependency-detector@dev
         with:
           adjacency_list_path: testing/data/some-input-graph.txt
       
