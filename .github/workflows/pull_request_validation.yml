@@ -18,7 +18,6 @@ jobs:
         with:
           repository: ${{ github.repository }}
           ref: ${{ github.GITHUB_REF_NAME }}  # current branch name
-          path: './test/'  # this path avoid colisions with
 
       - name: install task
         uses: arduino/setup-task@v2
@@ -27,10 +26,8 @@ jobs:
       
       - name: create graph input file
         run: |
-          ls
-          echo -e "1 2\n2 3\n3 1" > test/testing/data/test.txt  && cat test/testing/data/test.txt
+          echo -e "1 2\n2 3\n3 1" > testing/data/some-input-graph.txt
 
       - name: task run
         run: |
-          cd  test/
-          task INPUT_FILE="testing/data/test.txt" run
+          task INPUT_FILE="testing/data/some-input-graph.txt" run

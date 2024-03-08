@@ -22,7 +22,7 @@ tasks:
       - Dockerfile
 
   run:
-    desc: run the program inside container
+    desc: run the program locally inside container
     deps: [build]
     cmds:
       - podman run circular-dependency-detector "{{ .INPUT_FILE }}"
