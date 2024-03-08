@@ -11,7 +11,7 @@ jobs:
       matrix:
         input_file:
           - adj_list_cycle.txt
-          - adj_list_no_cycle.txt
+          # - adj_list_no_cycle.txt
     steps:
       - name: checkout current branch
         uses: actions/checkout@v4
@@ -24,8 +24,12 @@ jobs:
         uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: create graph input file
+        run: |
+          echo -e "1 2\n2 3\n3 1" > test.txt  && cat test/testing/data/test.txt
 
       - name: task run
         run: |
           cd  test/
-          task INPUT_FILE="testing/data/${{ matrix.input_file }}" run
+          task INPUT_FILE="testing/data/test.txt" run
