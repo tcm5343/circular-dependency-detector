@@ -27,7 +27,12 @@ jobs:
       - name: create graph input file
         run: |
           echo -e "1 2\n2 3\n3 1" > testing/data/some-input-graph.txt
-
+      
+      - name: circular-dependency-detector
+        uses: tcm5343/circular-dependency-detector@v0.2.0-alpha
+        with:
+          INPUT_FILE: testing/data/some-input-graph.txt
+      
       - name: task run
         run: |
           task INPUT_FILE="testing/data/some-input-graph.txt" run
