@@ -2,6 +2,7 @@ package graph
 
 import (
 	// "regexp"
+	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -53,76 +54,90 @@ func areValuesDistinct(m map[string]int64) bool { // todo: move to internal/test
 }
 
 func TestParseInputGraph(t *testing.T) {
-	input := trimWhitespaceFromLines(`
-	a b c
-    d
-	`)
-	lg, _ := ParseInputGraph(strings.NewReader(input))
+	var tests = []struct {
+		input                 string
+		expectedNodeCount     int
+		expectedEdgeCount     int
+		expectedEdgeTestCases []testEdge
+	}{
+		{
+			// multi directed graph, string node names, with no cycles, comments, and empty lines as adjacency list
+			trimWhitespaceFromLines(`# this is a comment
+			a b c # this is another comment
 
-	expectedNodeCount := 4
-	actualNodeCount := lg.Graph.Nodes().Len()
-	if actualNodeCount != expectedNodeCount {
-		t.Errorf(
-			"ParseInputGraph(%v).Graph.Nodes().Len() = %v, want %v",
-			input, actualNodeCount, expectedNodeCount,
-		)
+			d
+			`),
+			4,
+			2,
+			[]testEdge{
+				{"a", "a", false},
+				{"a", "b", true},
+				{"a", "c", true},
+				{"a", "d", false},
+				{"b", "a", false},
+				{"b", "b", false},
+				{"b", "c", false},
+				{"b", "d", false},
+				{"c", "a", false},
+				{"c", "b", false},
+				{"c", "c", false},
+				{"c", "d", false},
+				{"d", "a", false},
+				{"d", "b", false},
+				{"d", "c", false},
+				{"d", "d", false},
+			},
+		},
 	}
 
-	actualNumberOfLabels := len(lg.labels)
-	if actualNumberOfLabels != expectedNodeCount {
-		t.Errorf(
-			"len(ParseInputGraph(%v).labels) = %v, want %v",
-			input, actualNumberOfLabels, expectedNodeCount,
-		)
-	}
-	if !areValuesDistinct(lg.labels) {
-		t.Errorf("areValuesDistinct(%v) = false, want true", lg.labels)
-	}
+	for _, test := range tests {
+		lg, _ := ParseInputGraph(strings.NewReader(test.input))
+		fmt.Println(test.input)
 
-	expectedEdgeCount := 2
-	actualEdgeCount := lg.Graph.Edges().Len()
-	if expectedEdgeCount != actualEdgeCount {
-		t.Errorf(
-			"ParseInputGraph(%v).Graph.Edges().Len() = %v, want %v",
-			input, actualEdgeCount, expectedEdgeCount,
-		)
-	}
-
-	testEdges := []testEdge{
-		{"a", "a", false},
-		{"a", "b", true},
-		{"a", "c", true},
-		{"a", "d", false},
-		{"b", "a", false},
-		{"b", "b", false},
-		{"b", "c", false},
-		{"b", "d", false},
-		{"c", "a", false},
-		{"c", "b", false},
-		{"c", "c", false},
-		{"c", "d", false},
-		{"d", "a", false},
-		{"d", "b", false},
-		{"d", "c", false},
-		{"d", "d", false},
-	}
-
-	// this may seem excessive but caught a bug
-	expectedTestEdgesCount := expectedNodeCount * expectedNodeCount
-	actualTestEdgesCount := len(testEdges)
-	if actualTestEdgesCount != expectedTestEdgesCount {
-		t.Errorf("Found %v edge test cases, want %v for full coverage",
-			actualTestEdgesCount, expectedTestEdgesCount,
-		)
-	}
-
-	for _, testEdge := range testEdges {
-		actual := lg.Graph.HasEdgeFromTo(lg.labels[testEdge.from], lg.labels[testEdge.to])
-		if actual != testEdge.expected {
+		actualNodeCount := lg.Graph.Nodes().Len()
+		if actualNodeCount != test.expectedNodeCount {
 			t.Errorf(
-				"ParseInputGraph(%v).Graph.HasEdgeFromTo(%v, %v) = %v, want %v",
-				input, testEdge.from, testEdge.to, actual, testEdge.expected,
+				"ParseInputGraph(%v).Graph.Nodes().Len() = %v, want %v",
+				test.input, actualNodeCount, test.expectedNodeCount,
 			)
+		}
+
+		actualNumberOfLabels := len(lg.labels)
+		if actualNumberOfLabels != test.expectedNodeCount {
+			t.Errorf(
+				"len(ParseInputGraph(%v).labels) = %v, want %v",
+				test.input, actualNumberOfLabels, test.expectedNodeCount,
+			)
+		}
+		if !areValuesDistinct(lg.labels) {
+			t.Errorf("areValuesDistinct(%v) = false, want true", lg.labels)
+		}
+
+		actualEdgeCount := lg.Graph.Edges().Len()
+		if test.expectedEdgeCount != actualEdgeCount {
+			t.Errorf(
+				"ParseInputGraph(%v).Graph.Edges().Len() = %v, want %v",
+				test.input, actualEdgeCount, test.expectedEdgeCount,
+			)
+		}
+
+		// this may seem excessive but it caught a bug
+		expectedTestEdgesCount := test.expectedNodeCount * test.expectedNodeCount
+		actualTestEdgesCount := len(test.expectedEdgeTestCases)
+		if actualTestEdgesCount != expectedTestEdgesCount {
+			t.Errorf("Found %v edge test cases, want %v for full coverage",
+				actualTestEdgesCount, expectedTestEdgesCount,
+			)
+		}
+
+		for _, testEdge := range test.expectedEdgeTestCases {
+			actual := lg.Graph.HasEdgeFromTo(lg.labels[testEdge.from], lg.labels[testEdge.to])
+			if actual != testEdge.expected {
+				t.Errorf(
+					"ParseInputGraph(%v).Graph.HasEdgeFromTo(%v, %v) = %v, want %v",
+					test.input, testEdge.from, testEdge.to, actual, testEdge.expected,
+				)
+			}
 		}
 	}
 }

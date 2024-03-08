@@ -3,9 +3,15 @@ version: '3'
 dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
 
 tasks:
-  build:
+  default:
+    desc: display available tasks
     cmds:
-      - docker build -t circular-dependency-detector .
+      - task --list-all
+
+  build:
+    desc: build the container
+    cmds:
+      - podman build -t circular-dependency-detector .
     sources:
       - ./**/*.go
       - ./**/*.mod
@@ -13,21 +19,22 @@ tasks:
       - ./**/.env
       - ./entrypoint.sh
       - testing/**/*
+      - Dockerfile
 
   run:
-    desc: run the program with a specific local input file based off config
+    desc: run the program locally inside container
     deps: [build]
     cmds:
-      - docker run circular-dependency-detector "{{ .INPUT_FILE }}"
+      - podman run circular-dependency-detector "{{ .INPUT_FILE }}"
 
   test:
     desc: run the unit tests
     deps: [build]
     cmds:
-      - docker run --entrypoint 'go' circular-dependency-detector test -v /app/...
+      - podman run --entrypoint 'go' circular-dependency-detector test -v /app/...
 
   lint:
-    desc: Runs golangci-lint
+    desc: runs lint validation
     sources:
       - './**/*.go'
       - .golangci.yml
@@ -36,4 +43,4 @@ tasks:
 
   # clean:
   #   cmds:
-  #     - 
+  #     - rm -rf .task/

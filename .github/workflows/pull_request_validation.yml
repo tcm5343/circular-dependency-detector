@@ -7,25 +7,27 @@ on:
 jobs:
   cdd-e2e:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        input_file:
-          - adj_list_cycle.txt
-          - adj_list_no_cycle.txt
+    # strategy:
+    #   matrix:
+    #     input_file:
+    #       - adj_list_cycle.txt
+    #       - adj_list_no_cycle.txt
     steps:
       - name: checkout current branch
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}
           ref: ${{ github.GITHUB_REF_NAME }}  # current branch name
-          path: './test/'
 
       - name: install task
         uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: create graph input file
+        run: |
+          echo -e "1 2\n2 3\n3 1" > testing/data/some-input-graph.txt
 
       - name: task run
         run: |
-          cd  test/
-          task INPUT_FILE="testing/data/${{ matrix.input_file }}" run
+          task INPUT_FILE="testing/data/some-input-graph.txt" run

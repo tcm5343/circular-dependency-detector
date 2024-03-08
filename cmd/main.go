@@ -12,15 +12,21 @@ import (
 
 func main() {
 	argsWithoutProg := os.Args[1:]
-	inputGraphPath := argsWithoutProg[0]
 
 	slog.SetLogLoggerLevel(slog.LevelInfo)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	// fmt.Println(argsWithoutProg)
 	// fmt.Println("/app/" + inputGraphPath)
+	var inputGraphPath string
+	val, present := os.LookupEnv("INPUT_FILE")
+	if present {
+		inputGraphPath = val
+	} else {
+		inputGraphPath = "/app/" + argsWithoutProg[0]
+	}
 
-	fp, err := os.Open("/app/" + inputGraphPath) // fix: this path can't contain spaces for some reason...
+	fp, err := os.Open(inputGraphPath) // fix: this path can't contain spaces for some reason...
 	if err != nil {
 		panic(err)
 	}
