@@ -27,7 +27,7 @@ jobs:
       
       - name: create graph input file
         run: |
-          echo -e "1 2\n2 3\n3 1" > test.txt  && cat test/testing/data/test.txt
+          echo -e "1 2\n2 3\n3 1" > test/testing/data/test.txt  && cat test/testing/data/test.txt
 
       - name: task run
         run: |
