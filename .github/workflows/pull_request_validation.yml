@@ -31,7 +31,7 @@ jobs:
       - name: circular-dependency-detector
         uses: tcm5343/circular-dependency-detector@v0.2.0-alpha
         with:
-          INPUT_FILE: testing/data/some-input-graph.txt
+          adjacency_list_path: testing/data/some-input-graph.txt
       
       - name: task run
         run: |
