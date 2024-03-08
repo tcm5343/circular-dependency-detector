@@ -12,12 +12,16 @@ jobs:
     #     input_file:
     #       - adj_list_cycle.txt
     #       - adj_list_no_cycle.txt
-    steps:    
+    steps:
+      - name: create graph input file
+        run: |
+          echo -e "1 2\n2 3\n3 1" > testing/data/some-input-graph.txt
+
       - name: circular-dependency-detector
-        uses: tcm5343/circular-dependency-detector@dev
+        uses: tcm5343/circular-dependency-detector@master
         with:
           adjacency_list_path: /github/workspace/testing/data/some-input-graph.txt
-        
+
       - name: checkout current branch
         uses: actions/checkout@v4
         with:
@@ -28,11 +32,7 @@ jobs:
         uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: create graph input file
-        run: |
-          echo -e "1 2\n2 3\n3 1" > testing/data/some-input-graph.txt
-      
+
       - name: task run
         run: |
           task INPUT_FILE="/app/testing/data/some-input-graph.txt" run
