@@ -4,7 +4,7 @@ set -e
 
 INPUT_FILE=$1
 
-ls
+ls ./testing/data
 pwd
 
 # build source code
