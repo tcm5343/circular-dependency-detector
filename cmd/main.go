@@ -23,7 +23,7 @@ func main() {
 	if present {
 		inputGraphPath = val
 	} else {
-		inputGraphPath = "/app/" + argsWithoutProg[0]
+		inputGraphPath = argsWithoutProg[0]
 	}
 
 	fp, err := os.Open(inputGraphPath) // fix: this path can't contain spaces for some reason...
