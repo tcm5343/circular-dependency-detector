@@ -32,14 +32,18 @@ jobs:
 * [Podman](https://podman.io/) is used to manage containers in the`Taskfile`.
 * [golangci-lint](https://golangci-lint.run/) is used for lint.
 
-### Configuration 
+### Local Configuration 
 
-For local development, create a `.env` file at the root of the repository to modify your config. The only supported format for the input graph file environment variable (`INPUT_FILE`) is an adjacency list which follows the format used by [NetworkX](https://networkx.org/documentation/stable/reference/readwrite/adjlist.html#). An `.env-example` file exists at the root of the project.
+For local development, create a `.env` file at the root of the repository to use as your config. The only supported format for the input graph file environment variable (`INPUT_FILE`) is an adjacency list which follows the format used by [NetworkX](https://networkx.org/documentation/stable/reference/readwrite/adjlist.html#). An `.env-example` file exists at the root of the project.
 
 ```shell
 user@machine:~/dev/circular-dependency-detector$ cat ./.env 
 INPUT_FILE=testing/data/adj_list_no_cycle.txt  # no spaces for now, defaults to {i don't know yet}
 ```
+
+### Roadmap
+
+Future work is identified in [TODO.md](TODO.md).
 
 ## Musical Acknowledgements
 
