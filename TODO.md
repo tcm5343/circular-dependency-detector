@@ -1,8 +1,6 @@
 ## Todo
 
-* In a workflow, create a input graph file, and execute the action with it
 * Determine if project structure is idiomatic
-* Determine if `.env` or CLI args are better for configuration
 * Build out CI/CD pipeline:
     * Add end to end testing of the program
     * Add linting to the pipeline

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package filestream;
+
+option go_package = "github.com/tcm5343/circular-dependency-detector/protos;protos";
+
+service FileStream {
+    rpc UploadAndAnalyze(stream FileChunk) returns (AnalysisResult);
+}
+
+message FileChunk {
+    bytes content = 1;
+    int32 sequence = 2;
+}
+
+message AnalysisResult {
+    string result = 1;
+}

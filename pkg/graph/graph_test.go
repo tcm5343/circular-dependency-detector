@@ -2,10 +2,16 @@ package graph
 
 import (
 	// "regexp"
+	"context"
 	"fmt"
+	"log"
+	"os"
 	"reflect"
 	"strings"
 	"testing"
+
+	pb "github.com/tcm5343/circular-dependency-detector/protos"
+	"google.golang.org/grpc"
 )
 
 type testEdge = struct {
@@ -51,6 +57,46 @@ func areValuesDistinct(m map[string]int64) bool { // todo: move to internal/test
 		seen[v] = struct{}{}
 	}
 	return true // All values are distinct
+}
+
+func TestAlloy(t *testing.T) {
+
+	// if len(os.Args) < 2 {
+	//     log.Fatalf("Usage: %s <path-to-als-file>", os.Args[0])
+	// }
+	filePath := os.Args[1]
+
+	// Set up a connection to the server.
+	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Failed to connect: %v", err)
+	}
+	defer conn.Close()
+
+	// Create a client
+	client := pb.NewAlloyAnalyzerClient(conn)
+
+	// Define a request
+	req := &pb.ModelRequest{
+		FilePath: filePath,
+	}
+
+	// Call the service
+	resp, err := client.AnalyzeModel(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error calling service: %v", err)
+	}
+
+	// Print the response
+	fmt.Println("Result from Alloy Analyzer:", resp.Result)
+	// Check for the environment variable to decide if the test should run
+	if os.Getenv("RUN_MY_FEATURE_TEST") != "true" {
+		t.Skip("Skipping TestMyFeature because RUN_MY_FEATURE_TEST is not set to true")
+	}
+
+	// Your test logic here
+	t.Log("Running TestMyFeature")
+	// ... test code ...
 }
 
 func TestParseInputGraph(t *testing.T) {

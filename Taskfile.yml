@@ -11,7 +11,7 @@ tasks:
   build:
     desc: build the container
     cmds:
-      - podman build -t circular-dependency-detector .
+      - docker build -t circular-dependency-detector .
     sources:
       - ./**/*.go
       - ./**/*.mod
@@ -20,26 +20,27 @@ tasks:
       - ./entrypoint.sh
       - testing/**/*
       - Dockerfile
+      - Taskfile.yml
 
   run:
     desc: run the program locally inside container
     deps: [build]
     cmds:
-      - podman run circular-dependency-detector "{{ .INPUT_FILE }}"
+      - docker run circular-dependency-detector "{{ .INPUT_FILE }}" "{{ .FAIL_ON_CYCLE }}"
 
   test:
     desc: run the unit tests
     deps: [build]
     cmds:
-      - podman run --entrypoint 'go' circular-dependency-detector test -v /app/...
+      - docker run --entrypoint 'go' circular-dependency-detector test -v /app/...
 
   lint:
     desc: runs lint validation
+    cmds:
+      - golangci-lint run
     sources:
       - './**/*.go'
       - .golangci.yml
-    cmds:
-      - golangci-lint run
 
   # clean:
   #   cmds:
