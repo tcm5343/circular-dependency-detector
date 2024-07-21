@@ -12,9 +12,6 @@ import (
 )
 
 func main() {
-
-	// ... test code ...
-
 	// todo: maybe print out the args
 	inputGraphPath := flag.String("input-file", "SOME DEFAULT PATH", "absolute path to graph input file")
 	failOnCycle := flag.Bool("fail-on-cycle", true, "flag if action should fail if a cycle is detected")
