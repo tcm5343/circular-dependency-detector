@@ -168,7 +168,7 @@ func TestAlloyCyclicGraphs(t *testing.T) {
 			}
 			cycles := topo.DirectedCyclesIn(g)
 
-			if len(cycles) < 0 {
+			if len(cycles) == 0 {
 				t.Logf("Analysis result: %s\n", resp.GetResult()) // todo: handle command not found
 
 				// // Print out the nodes and edges
