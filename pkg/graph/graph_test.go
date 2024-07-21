@@ -1,17 +1,26 @@
 package graph
 
 import (
-	// "regexp"
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"os"
+
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 
-	pb "github.com/tcm5343/circular-dependency-detector/protos"
+	"gonum.org/v1/gonum/graph/encoding/dot"
+	"gonum.org/v1/gonum/graph/simple"
+	"gonum.org/v1/gonum/graph/topo"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
+
+	pb "github.com/tcm5343/circular-dependency-detector/protos"
 )
 
 type testEdge = struct {
@@ -59,44 +68,257 @@ func areValuesDistinct(m map[string]int64) bool { // todo: move to internal/test
 	return true // All values are distinct
 }
 
-func TestAlloy(t *testing.T) {
+func TestAlloyCyclicGraphs(t *testing.T) {
+	filePath := "/app/testing/alloy/directed_graph.als"
+	alloyCommand := "run cyclic for 4"
 
-	// if len(os.Args) < 2 {
-	//     log.Fatalf("Usage: %s <path-to-als-file>", os.Args[0])
-	// }
-	filePath := os.Args[1]
-
-	// Set up a connection to the server.
-	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
+	// create a connection
+	conn, err := grpc.NewClient(
+		"172.17.0.1:8080",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
 	if err != nil {
-		log.Fatalf("Failed to connect: %v", err)
+		t.Fatalf("could not create connection client to server: %v", err)
 	}
 	defer conn.Close()
 
-	// Create a client
-	client := pb.NewAlloyAnalyzerClient(conn)
-
-	// Define a request
-	req := &pb.ModelRequest{
-		FilePath: filePath,
-	}
-
-	// Call the service
-	resp, err := client.AnalyzeModel(context.Background(), req)
+	// send file and command to alloy-analyzer-service
+	client := pb.NewFileStreamClient(conn)
+	stream, err := client.UploadAndAnalyze(context.Background())
 	if err != nil {
-		log.Fatalf("Error calling service: %v", err)
+		s, ok := status.FromError(err)
+		if ok {
+			t.Logf("gRPC error code: %s\n", s.Code())
+			t.Logf("gRPC error message: %s\n", s.Message())
+			if s.Code() == codes.Unavailable {
+				t.Log("The service is unavailable. Ensure that the server is running and accessible.")
+			}
+			t.SkipNow()
+		} else {
+			log.Fatalf("RPC call failed: %v", err)
+		}
 	}
 
-	// Print the response
-	fmt.Println("Result from Alloy Analyzer:", resp.Result)
-	// Check for the environment variable to decide if the test should run
-	if os.Getenv("RUN_MY_FEATURE_TEST") != "true" {
-		t.Skip("Skipping TestMyFeature because RUN_MY_FEATURE_TEST is not set to true")
+	alloyProps := &pb.AlloyProperties{
+		Command: alloyCommand,
+	}
+	if err := stream.Send(&pb.FileStreamRequest{
+		Request: &pb.FileStreamRequest_Props{Props: alloyProps},
+	}); err != nil {
+		log.Fatalf("could not send metadata: %v", err)
+	}
+	t.Logf("Sent command: %s", alloyCommand)
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		log.Fatalf("could not open alloy model file: %v", err)
+	}
+	defer file.Close()
+
+	buf := make([]byte, 1024)
+	seq := int32(0)
+	for {
+		n, err := file.Read(buf)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("could not read file: %v", err)
+		}
+
+		// Send the file chunk
+		err = stream.Send(&pb.FileStreamRequest{
+			Request: &pb.FileStreamRequest_Chunk{
+				Chunk: &pb.FileChunk{
+					Content:  buf[:n],
+					Sequence: seq,
+				},
+			},
+		})
+		if err != nil {
+			log.Fatalf("could not send chunk: %v", err)
+		}
+		t.Logf("Sent chunk sequence %d\n", seq)
+		seq++
 	}
 
-	// Your test logic here
-	t.Log("Running TestMyFeature")
-	// ... test code ...
+	if err := stream.CloseSend(); err != nil {
+		log.Fatalf("could not close send: %v", err)
+	}
+
+	// process response
+	idx := 0
+	for {
+		idx++
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("could not receive response: %v", err)
+			break
+		}
+		t.Run(strconv.Itoa(idx), func(t *testing.T) {
+			t.Parallel()
+			// Parse the DOT data into the graph
+			g := simple.NewDirectedGraph()
+			err = dot.Unmarshal([]byte(resp.GetResult()), g)
+			if err != nil {
+				log.Fatalf("failed to unmarshal DOT data: %v", err)
+			}
+			cycles := topo.DirectedCyclesIn(g)
+
+			if len(cycles) < 0 {
+				t.Logf("Analysis result: %s\n", resp.GetResult()) // todo: handle command not found
+
+				// // Print out the nodes and edges
+				// t.Log("Nodes:")
+				// for nodes := g.Nodes(); nodes.Next(); {
+				// 	node := nodes.Node()
+				// 	t.Logf("Node ID: %v\n", node.ID())
+				// }
+
+				// t.Log("Edges:")
+				// for edges := g.Edges(); edges.Next(); {
+				// 	edge := edges.Edge()
+				// 	t.Logf("Edge from %v to %v\n", edge.From().ID(), edge.To().ID())
+				// }
+				// data, err := dot.Marshal(g, "Example Graph", "", "\t")
+				// if err != nil {
+				// 	log.Fatalf("error marshalling graph to DOT: %v", err)
+				// }
+				// t.Log(string(data))
+				t.Errorf("Expected cycles to be > 0, found none")
+			}
+		})
+	}
+}
+
+func TestAlloyAcyclicGraphs(t *testing.T) {
+	filePath := "/app/testing/alloy/directed_graph.als"
+	alloyCommand := "run acyclic for 4"
+
+	// create a connection
+	conn, err := grpc.NewClient(
+		"172.17.0.1:8080",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		t.Fatalf("could not create connection client to server: %v", err)
+	}
+	defer conn.Close()
+
+	// send file and command to alloy-analyzer-service
+	client := pb.NewFileStreamClient(conn)
+	stream, err := client.UploadAndAnalyze(context.Background())
+	if err != nil {
+		s, ok := status.FromError(err)
+		if ok {
+			t.Logf("gRPC error code: %s\n", s.Code())
+			t.Logf("gRPC error message: %s\n", s.Message())
+			if s.Code() == codes.Unavailable {
+				t.Log("The service is unavailable. Ensure that the server is running and accessible.")
+			}
+			t.SkipNow()
+		} else {
+			log.Fatalf("RPC call failed: %v", err)
+		}
+	}
+
+	alloyProps := &pb.AlloyProperties{
+		Command: alloyCommand,
+	}
+	if err := stream.Send(&pb.FileStreamRequest{
+		Request: &pb.FileStreamRequest_Props{Props: alloyProps},
+	}); err != nil {
+		log.Fatalf("could not send metadata: %v", err)
+	}
+	t.Logf("Sent command: %s", alloyCommand)
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		log.Fatalf("could not open alloy model file: %v", err)
+	}
+	defer file.Close()
+
+	buf := make([]byte, 1024)
+	seq := int32(0)
+	for {
+		n, err := file.Read(buf)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("could not read file: %v", err)
+		}
+
+		// Send the file chunk
+		err = stream.Send(&pb.FileStreamRequest{
+			Request: &pb.FileStreamRequest_Chunk{
+				Chunk: &pb.FileChunk{
+					Content:  buf[:n],
+					Sequence: seq,
+				},
+			},
+		})
+		if err != nil {
+			log.Fatalf("could not send chunk: %v", err)
+		}
+		t.Logf("Sent chunk sequence %d\n", seq)
+		seq++
+	}
+
+	if err := stream.CloseSend(); err != nil {
+		log.Fatalf("could not close send: %v", err)
+	}
+
+	// process response
+	idx := 0
+	for {
+		idx++
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("could not receive response: %v", err)
+			break
+		}
+		t.Run(strconv.Itoa(idx), func(t *testing.T) {
+			t.Parallel()
+			// Parse the DOT data into the graph
+			g := simple.NewDirectedGraph()
+			err = dot.Unmarshal([]byte(resp.GetResult()), g)
+			if err != nil {
+				log.Fatalf("failed to unmarshal DOT data: %v", err)
+			}
+			cycles := topo.DirectedCyclesIn(g)
+
+			if len(cycles) > 0 {
+				t.Logf("Analysis result: %s\n", resp.GetResult()) // todo: handle command not found
+
+				// // Print out the nodes and edges
+				// t.Log("Nodes:")
+				// for nodes := g.Nodes(); nodes.Next(); {
+				// 	node := nodes.Node()
+				// 	t.Logf("Node ID: %v\n", node.ID())
+				// }
+
+				// t.Log("Edges:")
+				// for edges := g.Edges(); edges.Next(); {
+				// 	edge := edges.Edge()
+				// 	t.Logf("Edge from %v to %v\n", edge.From().ID(), edge.To().ID())
+				// }
+				// data, err := dot.Marshal(g, "Example Graph", "", "\t")
+				// if err != nil {
+				// 	log.Fatalf("error marshalling graph to DOT: %v", err)
+				// }
+				// t.Log(string(data))
+
+				t.Errorf("Expected cycles to be < 0, found: %s", cycles)
+			}
+		})
+	}
 }
 
 func TestParseInputGraph(t *testing.T) {

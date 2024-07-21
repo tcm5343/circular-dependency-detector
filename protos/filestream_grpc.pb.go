@@ -48,8 +48,8 @@ func (c *fileStreamClient) UploadAndAnalyze(ctx context.Context, opts ...grpc.Ca
 }
 
 type FileStream_UploadAndAnalyzeClient interface {
-	Send(*FileChunk) error
-	CloseAndRecv() (*AnalysisResult, error)
+	Send(*FileStreamRequest) error
+	Recv() (*AnalysisResult, error)
 	grpc.ClientStream
 }
 
@@ -57,14 +57,11 @@ type fileStreamUploadAndAnalyzeClient struct {
 	grpc.ClientStream
 }
 
-func (x *fileStreamUploadAndAnalyzeClient) Send(m *FileChunk) error {
+func (x *fileStreamUploadAndAnalyzeClient) Send(m *FileStreamRequest) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *fileStreamUploadAndAnalyzeClient) CloseAndRecv() (*AnalysisResult, error) {
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
+func (x *fileStreamUploadAndAnalyzeClient) Recv() (*AnalysisResult, error) {
 	m := new(AnalysisResult)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -105,8 +102,8 @@ func _FileStream_UploadAndAnalyze_Handler(srv interface{}, stream grpc.ServerStr
 }
 
 type FileStream_UploadAndAnalyzeServer interface {
-	SendAndClose(*AnalysisResult) error
-	Recv() (*FileChunk, error)
+	Send(*AnalysisResult) error
+	Recv() (*FileStreamRequest, error)
 	grpc.ServerStream
 }
 
@@ -114,12 +111,12 @@ type fileStreamUploadAndAnalyzeServer struct {
 	grpc.ServerStream
 }
 
-func (x *fileStreamUploadAndAnalyzeServer) SendAndClose(m *AnalysisResult) error {
+func (x *fileStreamUploadAndAnalyzeServer) Send(m *AnalysisResult) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *fileStreamUploadAndAnalyzeServer) Recv() (*FileChunk, error) {
-	m := new(FileChunk)
+func (x *fileStreamUploadAndAnalyzeServer) Recv() (*FileStreamRequest, error) {
+	m := new(FileStreamRequest)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -137,6 +134,7 @@ var FileStream_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "UploadAndAnalyze",
 			Handler:       _FileStream_UploadAndAnalyze_Handler,
+			ServerStreams: true,
 			ClientStreams: true,
 		},
 	},
