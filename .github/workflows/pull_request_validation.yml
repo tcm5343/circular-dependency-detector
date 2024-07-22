@@ -33,7 +33,9 @@ jobs:
 
       - name: run unit tests
         run: |
-          cd ${{ github.GITHUB_REF_NAME }}
+          ls
+          pwd
+          cd ${{ github.repository }}
           task test
           cd ..
 
