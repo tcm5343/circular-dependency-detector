@@ -31,6 +31,12 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: start alloy-analyzer-service
+        run: |
+          cd alloy-analyzer-service
+          docker compose up --build --detach
+          cd ..
+
       - name: run unit tests
         run: |
           ls
