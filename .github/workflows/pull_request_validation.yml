@@ -7,12 +7,11 @@ on:
 jobs:
   cdd-e2e:
     runs-on: ubuntu-latest
-    # strategy:
-    #   matrix:
-    #     input_file:
-    #       - adj_list_cycle.txt
-    #       - adj_list_no_cycle.txt
     steps:
+      # - name: circular-dependency-detector
+      #   uses: tcm5343/circular-dependency-detector@main
+      #   with:
+      #     adjacency_list_path: /github/workspace/testing/data/some-input-graph.txt
 
       - name: checkout current branch
         uses: actions/checkout@v4
@@ -20,19 +19,17 @@ jobs:
           repository: ${{ github.repository }}
           ref: ${{ github.GITHUB_REF_NAME }}  # current branch name
 
-      - name: create graph input file
-        run: |
-          echo -e "1 2\n2 3\n3 1" > /github/workspace/testing/data/some-input-graph.txt
-
-      - name: circular-dependency-detector
-        uses: tcm5343/circular-dependency-detector@main
-        with:
-          adjacency_list_path: /github/workspace/testing/data/some-input-graph.txt
-
       - name: install task
         uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: run unit tests
+        run: task test
+
+      - name: create graph input file
+        run: |
+          echo -e "1 2\n2 3\n3 1" > /github/workspace/testing/data/some-input-graph.txt
 
       - name: task run
         run: |
