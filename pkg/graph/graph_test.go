@@ -19,7 +19,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	dotGraph "github.com/tcm5343/circular-dependency-detector/dot"
-	pb "github.com/tcm5343/circular-dependency-detector/protos"
+	pb "github.com/tcm5343/circular-dependency-detector/protos/filestream"
 )
 
 type testEdge = struct {

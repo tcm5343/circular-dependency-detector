@@ -6,32 +6,32 @@ import (
 	"gonum.org/v1/gonum/graph/multi"
 )
 
-type dotMultiGraph struct {
+type DotMultiGraph struct {
 	*multi.DirectedGraph
 }
 
-func newDotMultiGraph() *dotMultiGraph {
-	return &dotMultiGraph{DirectedGraph: multi.NewDirectedGraph()}
+func NewDotMultiGraph() *DotMultiGraph {
+	return &DotMultiGraph{DirectedGraph: multi.NewDirectedGraph()}
 }
 
-func (g *dotMultiGraph) AddEdge(from, to graph.Node) graph.Line {
-	e := &dotLine{Line: g.DirectedGraph.NewLine(from, to), attrs: make(map[string]string)}
+func (g *DotMultiGraph) AddEdge(from, to graph.Node) graph.Line {
+	e := &DotLine{Line: g.DirectedGraph.NewLine(from, to), attrs: make(map[string]string)}
 	return e
 }
 
-func (g *dotMultiGraph) NewLine(from, to graph.Node) graph.Line {
+func (g *DotMultiGraph) NewLine(from, to graph.Node) graph.Line {
 	line := g.DirectedGraph.NewLine(from, to)
-	dotLine := &dotLine{Line: line, attrs: make(map[string]string)}
+	dotLine := &DotLine{Line: line, attrs: make(map[string]string)}
 	return dotLine
 }
 
-func (g *dotMultiGraph) SetLine(e graph.Line) {
-	e.(*dotLine).g = g
+func (g *DotMultiGraph) SetLine(e graph.Line) {
+	e.(*DotLine).g = g
 	g.DirectedGraph.SetLine(e)
 }
 
-type dotLine struct {
-	g *dotMultiGraph
+type DotLine struct {
+	g *DotMultiGraph
 	graph.Line
 	attrs map[string]string
 }
@@ -48,13 +48,13 @@ type dotLine struct {
 // 	return reversedLine
 // }
 
-func (e *dotLine) SetAttribute(attr encoding.Attribute) error {
+func (e *DotLine) SetAttribute(attr encoding.Attribute) error {
 	// fmt.Printf("attr: %s\n", attr)
 
 	if attr.Key == "dir" && attr.Value == "both" {
 		// todo: method to reverse a dotLine instead
 		reversedLine := e.ReversedLine()
-		reversedDotLine := &dotLine{
+		reversedDotLine := &DotLine{
 			g:     e.g,
 			Line:  reversedLine,
 			attrs: make(map[string]string),
