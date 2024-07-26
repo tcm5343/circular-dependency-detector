@@ -112,7 +112,6 @@ func TestAlloyCyclicGraphs(t *testing.T) {
 	}
 	defer conn.Close()
 
-	// upload the file
 	stream, err := rpc.UploadFile(client, filePath, alloyCommand)
 	if err != nil {
 		s, ok := status.FromError(err)
@@ -154,23 +153,23 @@ func TestAlloyCyclicGraphs(t *testing.T) {
 				t.Logf("Analysis result: %s\n", resp.GetResult()) // todo: handle command not found
 				t.Logf("Cycles: %s", cycles)
 
-				// Print out the nodes and edges
-				t.Log("Nodes:")
-				for nodes := g.Nodes(); nodes.Next(); {
-					node := nodes.Node()
-					t.Logf("Node ID: %v\n", node.ID())
-				}
+				// // Print out the nodes and edges
+				// t.Log("Nodes:")
+				// for nodes := g.Nodes(); nodes.Next(); {
+				// 	node := nodes.Node()
+				// 	t.Logf("Node ID: %v\n", node.ID())
+				// }
 
-				t.Log("Edges:")
-				for edges := g.Edges(); edges.Next(); {
-					edge := edges.Edge()
-					t.Logf("Edge from %v to %v\n", edge.From().ID(), edge.To().ID())
-				}
-				data, err := dot.Marshal(g, "Example Graph", "", "\t")
-				if err != nil {
-					log.Fatalf("error marshalling graph to DOT: %v", err)
-				}
-				t.Log(string(data))
+				// t.Log("Edges:")
+				// for edges := g.Edges(); edges.Next(); {
+				// 	edge := edges.Edge()
+				// 	t.Logf("Edge from %v to %v\n", edge.From().ID(), edge.To().ID())
+				// }
+				// data, err := dot.Marshal(g, "Example Graph", "", "\t")
+				// if err != nil {
+				// 	log.Fatalf("error marshalling graph to DOT: %v", err)
+				// }
+				// t.Log(string(data))
 				t.Errorf("Expected cycles to be > 0, found none")
 			}
 		})
@@ -187,7 +186,6 @@ func TestAlloyAcyclicGraphs(t *testing.T) {
 	}
 	defer conn.Close()
 
-	// upload the file
 	stream, err := rpc.UploadFile(client, filePath, alloyCommand)
 	if err != nil {
 		s, ok := status.FromError(err)
