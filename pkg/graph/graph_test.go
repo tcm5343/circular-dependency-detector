@@ -2,24 +2,23 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
-
 	"reflect"
 	"strconv"
 	"strings"
 	"testing"
 
 	"gonum.org/v1/gonum/graph/encoding/dot"
-	"gonum.org/v1/gonum/graph/simple"
 	"gonum.org/v1/gonum/graph/topo"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
+	dotGraph "github.com/tcm5343/circular-dependency-detector/dot"
 	pb "github.com/tcm5343/circular-dependency-detector/protos"
 )
 
@@ -68,9 +67,48 @@ func areValuesDistinct(m map[string]int64) bool { // todo: move to internal/test
 	return true // All values are distinct
 }
 
+// func TestParsingGraphs(t *testing.T) {
+// 	ug := `
+// 	digraph "graph" {
+// 		graph [fontsize=12]
+// 		node [fontsize=12]
+// 		edge [fontsize=12]
+// 		rankdir=TB;
+// 		"N0" -> "N1" [uuid = "<Node1, Node0>", color = "#000000", fontcolor = "#000000", style = "solid", label = "edges", dir = "forward"]
+// 		"N0" -> "N2" [uuid = "<Node1, Node2>", color = "#000000", fontcolor = "#000000", style = "solid", label = "edges", dir = "both"]
+// 		"N2" -> "N1" [uuid = "<Node2, Node0>", color = "#000000", fontcolor = "#000000", style = "solid", label = "edges", dir = "forward"]
+// 		"N0" [uuid="Node1", label="Node1", color="#ffd700", fontcolor = "#000000", shape = "box", style = "filled, solid"]
+// 		"N1" [uuid="Node0", label="Node0", color="#ffd700", fontcolor = "#000000", shape = "box", style = "filled, solid"]
+// 		"N2" [uuid="Node2", label="Node2\n($cyclic_n)", color="#ffd700", fontcolor = "#000000", shape = "box", style = "filled, solid"]
+// 	}
+// 	`
+
+// 	g := newDotMultiGraph()
+// 	err := dot.UnmarshalMulti([]byte(ug), g)
+// 	if err != nil {
+// 		log.Fatalf("failed to unmarshal DOT data: %v", err)
+// 	}
+
+// 	// fmt.Println("Edges:")
+// 	// for edges := g.Edges(); edges.Next(); {
+// 	// 	edge := edges.Edge()
+// 	// 	fmt.Printf("Edge from %v to %v\n", edge.From().ID(), edge.To().ID())
+// 	// 	for lines := g.Lines(edge.From().ID(), edge.To().ID()); lines.Next(); {
+// 	// 		line := lines.Line().(*dotLine)
+// 	// 		fmt.Printf("Attributes: %v\n", line.attrs)
+// 	// 	}
+// 	// }
+
+// 	data, err := dot.Marshal(g, "Example Graph", "", "\t")
+// 	if err != nil {
+// 		log.Fatalf("error marshalling graph to DOT: %v", err)
+// 	}
+// 	t.Log(string(data))
+// }
+
 func TestAlloyCyclicGraphs(t *testing.T) {
 	filePath := "/app/testing/alloy/directed_graph.als"
-	alloyCommand := "run cyclic for 4"
+	alloyCommand := "run cyclic for 3"
 
 	// create a connection
 	conn, err := grpc.NewClient(
@@ -161,8 +199,8 @@ func TestAlloyCyclicGraphs(t *testing.T) {
 		t.Run(strconv.Itoa(idx), func(t *testing.T) {
 			t.Parallel()
 			// Parse the DOT data into the graph
-			g := simple.NewDirectedGraph()
-			err = dot.Unmarshal([]byte(resp.GetResult()), g)
+			g := dotGraph.newDotMultiGraph()
+			err = dot.UnmarshalMulti([]byte(resp.GetResult()), g)
 			if err != nil {
 				log.Fatalf("failed to unmarshal DOT data: %v", err)
 			}
@@ -170,24 +208,25 @@ func TestAlloyCyclicGraphs(t *testing.T) {
 
 			if len(cycles) == 0 {
 				t.Logf("Analysis result: %s\n", resp.GetResult()) // todo: handle command not found
+				t.Logf("Cycles: %s", cycles)
 
-				// // Print out the nodes and edges
-				// t.Log("Nodes:")
-				// for nodes := g.Nodes(); nodes.Next(); {
-				// 	node := nodes.Node()
-				// 	t.Logf("Node ID: %v\n", node.ID())
-				// }
+				// Print out the nodes and edges
+				t.Log("Nodes:")
+				for nodes := g.Nodes(); nodes.Next(); {
+					node := nodes.Node()
+					t.Logf("Node ID: %v\n", node.ID())
+				}
 
-				// t.Log("Edges:")
-				// for edges := g.Edges(); edges.Next(); {
-				// 	edge := edges.Edge()
-				// 	t.Logf("Edge from %v to %v\n", edge.From().ID(), edge.To().ID())
-				// }
-				// data, err := dot.Marshal(g, "Example Graph", "", "\t")
-				// if err != nil {
-				// 	log.Fatalf("error marshalling graph to DOT: %v", err)
-				// }
-				// t.Log(string(data))
+				t.Log("Edges:")
+				for edges := g.Edges(); edges.Next(); {
+					edge := edges.Edge()
+					t.Logf("Edge from %v to %v\n", edge.From().ID(), edge.To().ID())
+				}
+				data, err := dot.Marshal(g, "Example Graph", "", "\t")
+				if err != nil {
+					log.Fatalf("error marshalling graph to DOT: %v", err)
+				}
+				t.Log(string(data))
 				t.Errorf("Expected cycles to be > 0, found none")
 			}
 		})
@@ -287,8 +326,8 @@ func TestAlloyAcyclicGraphs(t *testing.T) {
 		t.Run(strconv.Itoa(idx), func(t *testing.T) {
 			t.Parallel()
 			// Parse the DOT data into the graph
-			g := simple.NewDirectedGraph()
-			err = dot.Unmarshal([]byte(resp.GetResult()), g)
+			g := dotGraph.newDotMultiGraph()
+			err = dot.UnmarshalMulti([]byte(resp.GetResult()), g)
 			if err != nil {
 				log.Fatalf("failed to unmarshal DOT data: %v", err)
 			}
@@ -360,7 +399,7 @@ func TestParseInputGraph(t *testing.T) {
 
 	for _, test := range tests {
 		lg, _ := ParseInputGraph(strings.NewReader(test.input))
-		fmt.Println(test.input)
+		// t.Log(test.input)
 
 		actualNodeCount := lg.Graph.Nodes().Len()
 		if actualNodeCount != test.expectedNodeCount {
