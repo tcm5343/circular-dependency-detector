@@ -1,10 +1,8 @@
 package graph
 
 import (
-	"context"
 	"io"
 	"log"
-	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -13,13 +11,11 @@ import (
 	"gonum.org/v1/gonum/graph/encoding/dot"
 	"gonum.org/v1/gonum/graph/topo"
 
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
-	dotGraph "github.com/tcm5343/circular-dependency-detector/dot"
-	pb "github.com/tcm5343/circular-dependency-detector/protos/filestream"
+	dotGraph "github.com/tcm5343/circular-dependency-detector/pkg/dot"
+	"github.com/tcm5343/circular-dependency-detector/pkg/rpc"
 )
 
 type testEdge = struct {
@@ -110,19 +106,14 @@ func TestAlloyCyclicGraphs(t *testing.T) {
 	filePath := "/app/testing/alloy/directed_graph.als"
 	alloyCommand := "run cyclic for 3"
 
-	// create a connection
-	conn, err := grpc.NewClient(
-		"172.17.0.1:8080",
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
+	client, conn, err := rpc.NewClient("172.17.0.1:8080")
 	if err != nil {
 		t.Fatalf("could not create connection client to server: %v", err)
 	}
 	defer conn.Close()
 
-	// send file and command to alloy-analyzer-service
-	client := pb.NewFileStreamClient(conn)
-	stream, err := client.UploadAndAnalyze(context.Background())
+	// upload the file
+	stream, err := rpc.UploadFile(client, filePath, alloyCommand)
 	if err != nil {
 		s, ok := status.FromError(err)
 		if ok {
@@ -135,53 +126,6 @@ func TestAlloyCyclicGraphs(t *testing.T) {
 		} else {
 			log.Fatalf("RPC call failed: %v", err)
 		}
-	}
-
-	alloyProps := &pb.AlloyProperties{
-		Command: alloyCommand,
-	}
-	if err := stream.Send(&pb.FileStreamRequest{
-		Request: &pb.FileStreamRequest_Props{Props: alloyProps},
-	}); err != nil {
-		log.Fatalf("could not send metadata: %v", err)
-	}
-	t.Logf("Sent command: %s", alloyCommand)
-
-	file, err := os.Open(filePath)
-	if err != nil {
-		log.Fatalf("could not open alloy model file: %v", err)
-	}
-	defer file.Close()
-
-	buf := make([]byte, 1024)
-	seq := int32(0)
-	for {
-		n, err := file.Read(buf)
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatalf("could not read file: %v", err)
-		}
-
-		// Send the file chunk
-		err = stream.Send(&pb.FileStreamRequest{
-			Request: &pb.FileStreamRequest_Chunk{
-				Chunk: &pb.FileChunk{
-					Content:  buf[:n],
-					Sequence: seq,
-				},
-			},
-		})
-		if err != nil {
-			log.Fatalf("could not send chunk: %v", err)
-		}
-		t.Logf("Sent chunk sequence %d\n", seq)
-		seq++
-	}
-
-	if err := stream.CloseSend(); err != nil {
-		log.Fatalf("could not close send: %v", err)
 	}
 
 	// process response
@@ -199,7 +143,7 @@ func TestAlloyCyclicGraphs(t *testing.T) {
 		t.Run(strconv.Itoa(idx), func(t *testing.T) {
 			t.Parallel()
 			// Parse the DOT data into the graph
-			g := dotGraph.newDotMultiGraph()
+			g := dotGraph.NewDotMultiGraph()
 			err = dot.UnmarshalMulti([]byte(resp.GetResult()), g)
 			if err != nil {
 				log.Fatalf("failed to unmarshal DOT data: %v", err)
@@ -237,19 +181,14 @@ func TestAlloyAcyclicGraphs(t *testing.T) {
 	filePath := "/app/testing/alloy/directed_graph.als"
 	alloyCommand := "run acyclic for 4"
 
-	// create a connection
-	conn, err := grpc.NewClient(
-		"172.17.0.1:8080",
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
+	client, conn, err := rpc.NewClient("172.17.0.1:8080")
 	if err != nil {
 		t.Fatalf("could not create connection client to server: %v", err)
 	}
 	defer conn.Close()
 
-	// send file and command to alloy-analyzer-service
-	client := pb.NewFileStreamClient(conn)
-	stream, err := client.UploadAndAnalyze(context.Background())
+	// upload the file
+	stream, err := rpc.UploadFile(client, filePath, alloyCommand)
 	if err != nil {
 		s, ok := status.FromError(err)
 		if ok {
@@ -262,53 +201,6 @@ func TestAlloyAcyclicGraphs(t *testing.T) {
 		} else {
 			log.Fatalf("RPC call failed: %v", err)
 		}
-	}
-
-	alloyProps := &pb.AlloyProperties{
-		Command: alloyCommand,
-	}
-	if err := stream.Send(&pb.FileStreamRequest{
-		Request: &pb.FileStreamRequest_Props{Props: alloyProps},
-	}); err != nil {
-		log.Fatalf("could not send metadata: %v", err)
-	}
-	t.Logf("Sent command: %s", alloyCommand)
-
-	file, err := os.Open(filePath)
-	if err != nil {
-		log.Fatalf("could not open alloy model file: %v", err)
-	}
-	defer file.Close()
-
-	buf := make([]byte, 1024)
-	seq := int32(0)
-	for {
-		n, err := file.Read(buf)
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatalf("could not read file: %v", err)
-		}
-
-		// Send the file chunk
-		err = stream.Send(&pb.FileStreamRequest{
-			Request: &pb.FileStreamRequest_Chunk{
-				Chunk: &pb.FileChunk{
-					Content:  buf[:n],
-					Sequence: seq,
-				},
-			},
-		})
-		if err != nil {
-			log.Fatalf("could not send chunk: %v", err)
-		}
-		t.Logf("Sent chunk sequence %d\n", seq)
-		seq++
-	}
-
-	if err := stream.CloseSend(); err != nil {
-		log.Fatalf("could not close send: %v", err)
 	}
 
 	// process response
@@ -326,7 +218,7 @@ func TestAlloyAcyclicGraphs(t *testing.T) {
 		t.Run(strconv.Itoa(idx), func(t *testing.T) {
 			t.Parallel()
 			// Parse the DOT data into the graph
-			g := dotGraph.newDotMultiGraph()
+			g := dotGraph.NewDotMultiGraph()
 			err = dot.UnmarshalMulti([]byte(resp.GetResult()), g)
 			if err != nil {
 				log.Fatalf("failed to unmarshal DOT data: %v", err)

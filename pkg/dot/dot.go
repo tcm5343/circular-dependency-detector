@@ -36,18 +36,6 @@ type DotLine struct {
 	attrs map[string]string
 }
 
-// func (e *dotLine) ReversedLine() *dotLine {
-// 	reversedLine := &dotLine{
-// 		g:     e.g,
-// 		Line:  e.g.DirectedGraph.NewLine(e.To(), e.From()),
-// 		attrs: make(map[string]string),
-// 	}
-// 	for k, v := range e.attrs {
-// 		reversedLine.attrs[k] = v
-// 	}
-// 	return reversedLine
-// }
-
 func (e *DotLine) SetAttribute(attr encoding.Attribute) error {
 	// fmt.Printf("attr: %s\n", attr)
 
