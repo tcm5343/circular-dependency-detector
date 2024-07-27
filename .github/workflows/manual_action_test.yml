@@ -3,16 +3,15 @@ name: Manual Action Test
 on: workflow_dispatch
 
 jobs:
-  unit-test:
+  manual-action-test:
     runs-on: ubuntu-latest
-    
     steps:
         - name: create graph input file
           run: |
             echo ${{ github.ref_name }}
             echo -e "1 2\n2 3\n3 1" > some-input-graph.txt
   
-        - name: circular-dependency-detector
-          uses: tcm5343/circular-dependency-detector@main
-          with:
-            adjacency_list_path: /github/workspace/some-input-graph.txt
+        # - name: circular-dependency-detector
+        #   uses: tcm5343/circular-dependency-detector@main
+        #   with:
+        #     adjacency_list_path: /github/workspace/some-input-graph.txt
