@@ -44,7 +44,11 @@ jobs:
     strategy:
       matrix:
         test-case:
-          - graph: "1 2\n2 3\n3 1" # cycle
+          - desc: "cyclic_graph"
+            graph: "1 2\n2 3\n3 1"
+            expected_cycles: [] # todo
+          - desc: "acyclic_graph"
+            graph: "1 2\n2 3"
             expected_cycles: [] # todo
     runs-on: ubuntu-latest
     steps:
