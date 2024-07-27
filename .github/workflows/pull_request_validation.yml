@@ -41,6 +41,11 @@ jobs:
           cd ..
 
   e2e-test:
+    strategy:
+      matrix:
+        test-case:
+          - graph: "1 2\n2 3\n3 1" # cycle
+            expected_cycles: [] # todo
     runs-on: ubuntu-latest
     steps:
       - name: checkout current branch
@@ -56,7 +61,7 @@ jobs:
 
       - name: create graph input file
         run: |
-            echo -e "1 2\n2 3\n3 1" > some-input-graph.txt
+            echo -e ${{ matrix.test-case.graph }} > some-input-graph.txt
 
       - name: run cdd
         run: |
