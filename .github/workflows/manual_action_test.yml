@@ -11,7 +11,7 @@ jobs:
             echo ${{ github.ref_name }}
             echo -e "1 2\n2 3\n3 1" > some-input-graph.txt
   
-        # - name: circular-dependency-detector
-        #   uses: tcm5343/circular-dependency-detector@main
-        #   with:
-        #     adjacency_list_path: /github/workspace/some-input-graph.txt
+        - name: circular-dependency-detector
+          uses: tcm5343/circular-dependency-detector@${{ github.ref_name }}
+          with:
+            adjacency_list_path: /github/workspace/some-input-graph.txt
