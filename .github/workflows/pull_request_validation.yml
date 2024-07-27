@@ -50,6 +50,9 @@ jobs:
           - desc: "acyclic_graph"
             graph: "1 2\n2 3"
             expected_cycles: [] # todo
+          - desc: "empty_graph"
+            graph: ""
+            expected_cycles: []
     runs-on: ubuntu-latest
     steps:
       - name: checkout current branch
