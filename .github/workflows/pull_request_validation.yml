@@ -39,3 +39,21 @@ jobs:
           cd ${{ github.repository }}
           task test
           cd ..
+
+  e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout current branch
+        uses: actions/checkout@v4
+        with:
+            repository: ${{ github.repository }}
+            path: ${{ github.repository }}
+            ref: ${{ github.GITHUB_REF_NAME }}  # current branch
+
+      - name: create graph input file
+        run: |
+            echo -e "1 2\n2 3\n3 1" > some-input-graph.txt
+
+      - name: run cdd
+        run: |
+            task INPUT_FILE="/app/some-input-graph.txt" FAIL_ON_CYCLE=false run
