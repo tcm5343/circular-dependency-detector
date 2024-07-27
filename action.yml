@@ -12,6 +12,7 @@ inputs:
     description: 'absolute path to graph output file'
     required: false
     default: '/github/workspace'
+runs:
   using: "docker"
   image: 'Dockerfile'
   # the order of these args matter to the internal running of the app
