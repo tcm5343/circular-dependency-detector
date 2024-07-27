@@ -14,5 +14,3 @@ require (
 	golang.org/x/text v0.16.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240318140521-94a12d6c2237 // indirect
 )
-
-// replace github.com/tcm5343/circular-dependency-detector/pkg/dot => ./pkg/dot
