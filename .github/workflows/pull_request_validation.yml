@@ -47,7 +47,6 @@ jobs:
         uses: actions/checkout@v4
         with:
             repository: ${{ github.repository }}
-            path: ${{ github.repository }}
             ref: ${{ github.GITHUB_REF_NAME }}  # current branch
 
       - name: install task
