@@ -61,7 +61,7 @@ jobs:
 
       - name: create graph input file
         run: |
-            echo -e ${{ matrix.test-case.graph }} > some-input-graph.txt
+            echo -e "${{ matrix.test-case.graph }}" > some-input-graph.txt
 
       - name: run cdd
         run: |
