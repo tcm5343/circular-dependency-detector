@@ -11,7 +11,7 @@ jobs:
             echo -e "1 2\n2 3\n3 1" > some-input-graph.txt
   
         - name: circular-dependency-detector
-          uses: tcm5343/circular-dependency-detector@main
+          uses: tcm5343/circular-dependency-detector@dev
           with:
             INPUT_PATH: /github/workspace/some-input-graph.txt
             FAIL_ON_CYCLE: false
