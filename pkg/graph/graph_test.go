@@ -90,7 +90,7 @@ func areValuesDistinct(m map[string]int64) bool { // todo: move to internal/test
 // 	// 	edge := edges.Edge()
 // 	// 	fmt.Printf("Edge from %v to %v\n", edge.From().ID(), edge.To().ID())
 // 	// 	for lines := g.Lines(edge.From().ID(), edge.To().ID()); lines.Next(); {
-// 	// 		line := lines.Line().(*dotLine)
+// 	// 		line := lines.Line().(*DotLine)
 // 	// 		fmt.Printf("Attributes: %v\n", line.attrs)
 // 	// 	}
 // 	// }

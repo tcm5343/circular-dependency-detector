@@ -5,14 +5,9 @@ on:
       - main
 
 jobs:
-  cdd-e2e:
+  unit-test:
     runs-on: ubuntu-latest
     steps:
-      # - name: circular-dependency-detector
-      #   uses: tcm5343/circular-dependency-detector@main
-      #   with:
-      #     adjacency_list_path: /github/workspace/testing/data/some-input-graph.txt
-
       - name: checkout current branch
         uses: actions/checkout@v4
         with:
@@ -44,11 +39,3 @@ jobs:
           cd ${{ github.repository }}
           task test
           cd ..
-
-      # - name: create graph input file
-      #   run: |
-      #     echo -e "1 2\n2 3\n3 1" > testing/data/some-input-graph.txt
-
-      # - name: task run
-      #   run: |
-      #     task INPUT_FILE="/app/testing/data/some-input-graph.txt" run
