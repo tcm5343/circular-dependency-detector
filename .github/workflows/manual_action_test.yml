@@ -13,6 +13,6 @@ jobs:
             echo -e "1 2\n2 3\n3 1" > some-input-graph.txt
   
         - name: circular-dependency-detector
-          uses: tcm5343/circular-dependency-detector@<TODO LATEST VERSION HERE>
+          uses: tcm5343/circular-dependency-detector
           with:
             adjacency_list_path: /github/workspace/some-input-graph.txt
