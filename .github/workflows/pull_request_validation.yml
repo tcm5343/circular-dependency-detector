@@ -50,6 +50,11 @@ jobs:
             path: ${{ github.repository }}
             ref: ${{ github.GITHUB_REF_NAME }}  # current branch
 
+      - name: install task
+        uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: create graph input file
         run: |
             echo -e "1 2\n2 3\n3 1" > some-input-graph.txt
