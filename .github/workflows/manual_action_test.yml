@@ -1,0 +1,39 @@
+name: Pull Request Verification
+
+on: workflow_dispatch
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout current branch
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          path: ${{ github.repository }}
+          ref: ${{ github.GITHUB_REF_NAME }}  # current branch name
+
+#       - name: checkout alloy-analyzer-service
+#         uses: actions/checkout@v4
+#         with:
+#           repository: tcm5343/alloy-analyzer-service
+#           path: alloy-analyzer-service
+
+#       - name: install task
+#         uses: arduino/setup-task@v2
+#         with:
+#           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+#       - name: start alloy-analyzer-service
+#         run: |
+#           cd alloy-analyzer-service
+#           docker compose up --build --detach
+#           cd ..
+
+#       - name: run unit tests
+#         run: |
+#           ls
+#           pwd
+#           cd ${{ github.repository }}
+#           task test
+#           cd ..
