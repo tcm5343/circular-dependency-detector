@@ -11,4 +11,5 @@ COPY --from=build /app/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 COPY --from=build /app/circular-dependency-detector /app/circular-dependency-detector
+COPY --from=build /app/testing /app/testing
 ENTRYPOINT ["sh", "/app/entrypoint.sh"]
