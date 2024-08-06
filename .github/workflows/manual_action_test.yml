@@ -1,0 +1,17 @@
+name: Manual Action Test
+
+on: workflow_dispatch
+
+jobs:
+  manual-action-test:
+    runs-on: ubuntu-latest
+    steps:
+        - name: create graph input file
+          run: |
+            echo -e "1 2\n2 3\n3 1" > some-input-graph.txt
+  
+        - name: circular-dependency-detector
+          uses: tcm5343/circular-dependency-detector@main
+          with:
+            INPUT_PATH: /github/workspace/some-input-graph.txt
+            FAIL_ON_CYCLE: false

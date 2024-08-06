@@ -1,41 +1,22 @@
 name: 'circular-dependency-detector'
 description: 'Detect and output cycles and topological generations given a directed graph.'
 inputs:
-  adjacency_list_path:
-    description: 'Path to a file where an adjacency list is stored'
+  INPUT_PATH:
+    description: 'absolute path to graph input file'
     required: true
+  FAIL_ON_CYCLE:
+    description: 'flag if action should fail if a cycle is detected'
+    required: false
+    default: true
+  OUTPUT_FILE:
+    description: 'absolute path to graph output file'
+    required: false
+    default: '/github/workspace'
 runs:
   using: "docker"
   image: 'Dockerfile'
+  # the order of these args matter to the internal running of the app
   args:
-    - ${{ inputs.adjacency_list_path }}
-
-# name: 'circular-dependency-detector'
-# description: 'Detect and output cycles and topological generations given a directed graph.'
-# inputs:
-#   adjacency_list_path:
-#     description: 'Path to a file where an adjacency list is stored'
-#     required: true
-# runs:
-#   using: "composite"
-#   steps:
-#     - name: Download a single artifact
-#       uses: actions/download-artifact@v3
-#       with:
-#         name: adj-list
-
-#     - name: Print
-#       shell: bash
-#       run: |  
-#         pwd
-#         ls
-
-#     - name: Build Container
-#       shell: bash
-#       run: |  
-#         docker build -t circular-dependency-detector --progress=plain --no-cache --build-arg ADJACENCY_LIST_PATH=${{ inputs.adjacency_list_path }} .
-
-#     - name: Run Container
-#       shell: bash
-#       run: |  
-#         docker run circular-dependency-detector
+    - ${{ inputs.INPUT_PATH }}
+    - ${{ inputs.FAIL_ON_CYCLE }}
+    - ${{ inputs.OUTPUT_FILE }}

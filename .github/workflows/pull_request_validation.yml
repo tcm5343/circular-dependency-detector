@@ -5,27 +5,59 @@ on:
       - main
 
 jobs:
-  cdd-e2e:
+  unit-test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        input_file:
-          - adj_list_cycle.txt
-          - adj_list_no_cycle.txt
     steps:
       - name: checkout current branch
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}
+          path: ${{ github.repository }}
           ref: ${{ github.GITHUB_REF_NAME }}  # current branch name
-          path: './test/'
+
+      - name: checkout alloy-analyzer-service
+        uses: actions/checkout@v4
+        with:
+          repository: tcm5343/alloy-analyzer-service
+          path: alloy-analyzer-service
 
       - name: install task
         uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: task run
+      - name: start alloy-analyzer-service
         run: |
-          cd  test/
-          task INPUT_FILE="testing/data/${{ matrix.input_file }}" run
+          cd alloy-analyzer-service
+          docker compose up --build --detach
+          cd ..
+
+      - name: run unit tests
+        run: |
+          ls
+          pwd
+          cd ${{ github.repository }}
+          task test
+          cd ..
+
+  e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout current branch
+        uses: actions/checkout@v4
+        with:
+            repository: ${{ github.repository }}
+            ref: ${{ github.GITHUB_REF_NAME }}  # current branch
+
+      - name: install task
+        uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: create graph input file
+        run: |
+            echo -e "1 2\n2 3\n3 1" > some-input-graph.txt
+
+      - name: run cdd
+        run: |
+            task INPUT_FILE="/app/some-input-graph.txt" FAIL_ON_CYCLE=false run

@@ -22,5 +22,6 @@ go.work
 
 .vscode/
 .task/
+/tmp
 
 *.env
