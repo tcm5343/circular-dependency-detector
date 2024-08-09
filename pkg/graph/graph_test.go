@@ -65,18 +65,18 @@ func areValuesDistinct(m map[string]int64) bool { // todo: move to internal/test
 
 // func TestParsingGraphs(t *testing.T) {
 // 	ug := `
-// 	digraph "graph" {
-// 		graph [fontsize=12]
-// 		node [fontsize=12]
-// 		edge [fontsize=12]
-// 		rankdir=TB;
-// 		"N0" -> "N1" [uuid = "<Node1, Node0>", color = "#000000", fontcolor = "#000000", style = "solid", label = "edges", dir = "forward"]
-// 		"N0" -> "N2" [uuid = "<Node1, Node2>", color = "#000000", fontcolor = "#000000", style = "solid", label = "edges", dir = "both"]
-// 		"N2" -> "N1" [uuid = "<Node2, Node0>", color = "#000000", fontcolor = "#000000", style = "solid", label = "edges", dir = "forward"]
-// 		"N0" [uuid="Node1", label="Node1", color="#ffd700", fontcolor = "#000000", shape = "box", style = "filled, solid"]
-// 		"N1" [uuid="Node0", label="Node0", color="#ffd700", fontcolor = "#000000", shape = "box", style = "filled, solid"]
-// 		"N2" [uuid="Node2", label="Node2\n($cyclic_n)", color="#ffd700", fontcolor = "#000000", shape = "box", style = "filled, solid"]
-// 	}
+// digraph "graph" {
+// 	graph [fontsize=12]
+// 	node [fontsize=12]
+// 	edge [fontsize=12]
+// 	rankdir=TB;
+// 	"N0" -> "N1" [uuid = "<Node1, Node0>", color = "#000000", fontcolor = "#000000", style = "solid", label = "edges", dir = "forward"]
+// 	"N0" -> "N2" [uuid = "<Node1, Node2>", color = "#000000", fontcolor = "#000000", style = "solid", label = "edges", dir = "both"]
+// 	"N2" -> "N1" [uuid = "<Node2, Node0>", color = "#000000", fontcolor = "#000000", style = "solid", label = "edges", dir = "forward"]
+// 	"N0" [uuid="Node1", label="Node1", color="#ffd700", fontcolor = "#000000", shape = "box", style = "filled, solid"]
+// 	"N1" [uuid="Node0", label="Node0", color="#ffd700", fontcolor = "#000000", shape = "box", style = "filled, solid"]
+// 	"N2" [uuid="Node2", label="Node2\n($cyclic_n)", color="#ffd700", fontcolor = "#000000", shape = "box", style = "filled, solid"]
+// }
 // 	`
 
 // 	g := newDotMultiGraph()
