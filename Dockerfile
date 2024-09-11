@@ -1,4 +1,4 @@
-FROM docker.io/golang:1.22
+FROM docker.io/golang:1.23
 
 COPY ./ /app/
 RUN chmod +x /app/entrypoint.sh
