@@ -3,7 +3,7 @@ module github.com/tcm5343/circular-dependency-detector
 go 1.22
 
 require (
-	gonum.org/v1/gonum v0.15.0
+	gonum.org/v1/gonum v0.15.1
 	google.golang.org/grpc v1.66.1
 	google.golang.org/protobuf v1.34.2
 )
