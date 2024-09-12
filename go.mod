@@ -4,7 +4,7 @@ go 1.22
 
 require (
 	gonum.org/v1/gonum v0.15.1
-	google.golang.org/grpc v1.66.1
+	google.golang.org/grpc v1.66.2
 	google.golang.org/protobuf v1.34.2
 )
 
