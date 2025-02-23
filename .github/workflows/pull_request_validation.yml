@@ -8,23 +8,11 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout current branch
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }}
-          path: ${{ github.repository }}
-          ref: ${{ github.GITHUB_REF_NAME }}  # current branch name
-
       - name: checkout alloy-analyzer-service
         uses: actions/checkout@v4
         with:
           repository: tcm5343/alloy-analyzer-service
           path: alloy-analyzer-service
-
-      - name: install task
-        uses: arduino/setup-task@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: start alloy-analyzer-service
         run: |
@@ -32,15 +20,40 @@ jobs:
           docker compose up --build --detach
           cd ..
 
+      - name: install task
+        uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: checkout circular-dependency-detector (current branch)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          path: ${{ github.repository }}
+          ref: ${{ github.GITHUB_REF_NAME }}  # current branch name
+
       - name: run unit tests
         run: |
-          ls
-          pwd
           cd ${{ github.repository }}
           task test
           cd ..
 
   e2e-test:
+    strategy:
+      matrix:
+        test-case:
+          - desc: "cyclic_graph"
+            graph: "1 2\n2 3\n3 1"
+            expected_cycles: [] # todo
+            expected_topological_generations: [] # todo
+          - desc: "acyclic_graph"
+            graph: "1 2\n2 3"
+            expected_cycles: [] # todo
+            expected_topological_generations: [] # todo
+          - desc: "empty_graph"
+            graph: ""
+            expected_cycles: []
+            expected_topological_generations: []
     runs-on: ubuntu-latest
     steps:
       - name: checkout current branch
@@ -56,7 +69,7 @@ jobs:
 
       - name: create graph input file
         run: |
-            echo -e "1 2\n2 3\n3 1" > some-input-graph.txt
+            echo -e "${{ matrix.test-case.graph }}" > some-input-graph.txt
 
       - name: run cdd
         run: |

@@ -10,23 +10,6 @@ import (
 	"gonum.org/v1/gonum/graph/multi"
 )
 
-// func (g LabledGraph) nodeFor(word string) graph.Node {
-// 	id, ok := g.labels[word]
-// 	if !ok {
-// 		return nil
-// 	}
-// 	return g.UndirectedGraph.Node(id)
-// }
-
-// // node is a word node in a LabledGraph.
-// type node struct {
-// 	word string
-// 	id   int64
-// }
-
-// func (n node) ID() int64      { return n.id }
-// func (n node) String() string { return n.word }
-
 type LabledGraph struct {
 	labels map[string]int64
 	Graph  *multi.DirectedGraph
